@@ -16,11 +16,14 @@ class TransactionPayment extends Component
     public $note;
     public $isInvoice;
     public $changeTextButton = "Hitung Kembalian";
-    
+
 
     public function mount()
     {
         $this->status = $this->transaction->status ?? 'pending';
+        $this->paid_amount = in_array($this->transaction->status, ["paid", "cancelled"]) ? $this->transaction->paid_amount : $this->paid_amount;
+        $this->change = in_array($this->transaction->status, ["paid", "cancelled"]) ? $this->transaction->return_amount : $this->change;
+
     }
 
     public function render()
@@ -60,7 +63,7 @@ class TransactionPayment extends Component
         }
 
         if ($this->status === 'pending') {
-                $this->transaction->note = $this->note;
+            $this->transaction->note = $this->note;
         }
 
         $this->transaction->save();

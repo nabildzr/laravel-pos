@@ -20,6 +20,15 @@
 
 
 
+            <li class="sidebar-menu-group-title">User</li>
+            <li>
+                <a href="{{ url('/users') }}">
+                    <iconify-icon icon="tdesign:user-filled" class
+                    ="menu-icon"></iconify-icon>
+                    <span>Users</span>
+                </a>
+            </li>
+        
             <li class="sidebar-menu-group-title">Master</li>
             <li>
                 <a href="{{ url('/category') }}">

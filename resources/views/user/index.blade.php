@@ -1,6 +1,6 @@
 @extends('layout.layout')
 @php
-    $title = 'Kategori';
+    $title = 'Users';
     $subTitle = 'Point of Sales';
     $script = '<script src="' . asset('assets/js/data-table.js') . '"></script>
     <script>
@@ -9,15 +9,6 @@
         });
     </script>
     
-    <script>
-        document.getElementById("closeModal").addEventListener("click", function() {
-            const modal = this.closest(".modal");
-            if (modal) {
-                modal.classList.add("hidden");
-            }
-        });
-    </script>
-
     
     
     ';
@@ -28,16 +19,18 @@
         <div class="col-span-12">
             <div class="card border-0 overflow-hidden">
                 <div class="card-header">
-                    <h6 class="card-title mb-0 text-lg">Category Datatables</h6>
+                    <h6 class="card-title mb-0 text-lg">Users Datatables</h6>
                 </div>
 
 
                 <div class="card-body">
                     @include('layout.feedback')
 
-                    <a href="{{ route('newCategory') }}"
+                    <a href="{{ 
+                    // route('newMember')
+                     }}"
                         class="btn bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-5 py-[11px] mb-5">Create new
-                        Category</a>
+                        User</a>
                     <table id="selection-table"
                         class="border border-neutral-200 dark:border-neutral-600 rounded-lg border-separate	">
                         <thead>
@@ -50,9 +43,10 @@
                                         </label>
                                     </div>
                                 </th>
+
                                 <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="flex items-center gap-2">
-                                        Category Name
+                                        User Name
                                         <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                             width="24" height="24" fill="none" viewBox="0 0 24 24">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -72,7 +66,7 @@
                                 </th>
                                 <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="flex items-center gap-2">
-                                        Description
+                                        Phone Number
                                         <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                             width="24" height="24" fill="none" viewBox="0 0 24 24">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -80,17 +74,26 @@
                                         </svg>
                                     </div>
                                 </th>
-
-                                {{-- <th scope="col" class="text-neutral-800 dark:text-white">
+                                <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="flex items-center gap-2">
-                                        Status
+                                        Email
                                         <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                             width="24" height="24" fill="none" viewBox="0 0 24 24">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                                 stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4" />
                                         </svg>
                                     </div>
-                                </th> --}}
+                                </th>
+                                <th scope="col" class="text-neutral-800 dark:text-white">
+                                    <div class="flex items-center gap-2">
+                                        Address
+                                        <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                            width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4" />
+                                        </svg>
+                                    </div>
+                                </th>
                                 <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="flex items-center gap-2">
                                         Action
@@ -99,47 +102,76 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($categories as $category)
+                            @foreach ($members as $member)
                                 <tr>
                                     <td>
                                         <div class="form-check style-check flex items-center">
                                             <input class="form-check-input" type="checkbox">
                                             <label class="ms-2 form-check-label">
-                                                {{ $category->id }}
+                                                {{ $member->id }}
                                             </label>
                                         </div>
                                     </td>
                                     <td>
-                                        <h6 class="text-base mb-0 font-bold grow">{{ $category->name }}</h6>
+                                        <div class="flex items-center">
+                                            @if ($member->image)
+                                                <img src="{{ asset('storage/' . $member->image) }}" alt=""
+                                                    class="shrink-0 me-3 rounded-lg w-10">
+                                            @else
+                                                <img src="{{ asset('') }}" alt=""
+                                                    class="shrink-0 me-3 rounded-lg w-10 bg-white">
+                                            @endif
+                                            <h6 class="text-base mb-0 font-bold grow">{{ $member->name }}</h6>
+                                        </div>
                                     </td>
 
                                     <td>
-                                        <h6 class="text-base mb-0 font-medium grow">{{ $category->user->name }}</h6>
+                                        <h6
+                                            class="text-base
+                                            mb-0 font-medium grow">
+                                            {{ $member->user->name }}</h6>
                                     </td>
                                     <td>
-                                        <div class="items-center w-48">
-                                            <Text class="text-base mb-0 font-medium grow">{{ $category->description }}</Text>
+                                        <div class="flex items-center">
+
+                                            <h6 class="text-base mb-0 font-medium grow">{{ $member->phone_number }}
+                                            </h6>
                                         </div>
                                     </td>
-                                    {{-- <td> <span
-                                            class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-6 py-1.5 rounded-full font-medium text-sm">Active</span>
-                                    </td> --}}
-                                    <td class="">
-                                        <a href="{{ url("/category/edit/$category->id") }}"
+                                    <td>
+                                        <div class="flex items-center">
+
+                                            <h6 class="text-base mb-0 font-medium grow">{{ $member->email }}
+                                            </h6>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="flex items-center">
+
+                                            <h6 class="text-base mb-0 font-medium grow">{{ $member->address }}
+                                            </h6>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:void(0)"
+                                            class="w-8 h-8 bg-primary-50 dark:bg-primary-600/10 text-primary-600 dark:text-primary-400 rounded-full inline-flex items-center justify-center">
+                                            <iconify-icon icon="iconamoon:eye-light"></iconify-icon>
+                                        </a>
+                                        <a href="{{ url("/member/edit/$member->id") }}"
                                             class="w-8 h-8 bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 rounded-full inline-flex items-center justify-center">
                                             <iconify-icon icon="lucide:edit"></iconify-icon>
                                         </a>
-                                        <a data-modal-target="delete-modal-{{ $category->id }}"
-                                            data-modal-toggle="delete-modal-{{ $category->id }}"
-                                            class="w-8 h-8 bg-danger-100 dark:bg-danger-600/25 text-danger-600 dark:text-danger-400 rounded-full inline-flex items-center justify-center">
-                                            <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
-                                        </a>
+
+                                        @if (!in_array(strtolower($member->name), ['cash', 'transfer']))
+                                            <a data-modal-target="delete-modal-{{ $member->id }}"
+                                                data-modal-toggle="delete-modal-{{ $member->id }}"
+                                                class="w-8 h-8 bg-danger-100 dark:bg-danger-600/25 text-danger-600 dark:text-danger-400 rounded-full inline-flex items-center justify-center">
+                                                <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
+                                        @endif
                                     </td>
                                 </tr>
 
-                                <x-confirm-delete-modal :modalId="'delete-modal-' . $category->id" :route="route('actionDeleteCategory', $category->id)" />
-
-                                {{-- @include('layout.confirmDeleteModal', ) --}}
+                                <x-confirm-delete-modal :modalId="'delete-modal-' . $member->id" :route="route('actionDeleteMember', $member->id)" />
                             @endforeach
 
                         </tbody>

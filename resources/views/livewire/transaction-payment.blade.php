@@ -89,6 +89,13 @@
                 <span>Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
             </div>
 
+            @if ($transaction->member_id)
+                <div class="flex justify-between mb-2">
+                    <span>Member Discount</span>
+                    <span>- Rp {{ number_format($subtotal * 0.05, 0, ',', '.') }}</span>
+                </div>
+            @endif
+
 
 
 
@@ -103,11 +110,21 @@
             <div class="p-6 bg-neutral-100 dark:bg-neutral-800 gap-2 flex flex-col rounded-lg mb-4">
                 <div class="flex justify-between">
                     <span class="font-semibold">Uang yang diberikan</span>
-                    <span class="">Rp {{ number_format((float) $paid_amount, 0, ',', '.') }}</span>
+                    @if ($transaction->status === ('paid' || 'cancelled'))
+                        <span class="">Rp
+                            {{ number_format((float) $transaction->paid_amount, 0, ',', '.') }}</span>
+                    @else
+                        <span class="">Rp {{ number_format((float) $paid_amount, 0, ',', '.') }}</span>
+                    @endif
                 </div>
                 <div class="flex justify-between">
                     <span class="font-semibold">Kembalian</span>
-                    <span class="">Rp {{ number_format((float) $change, 0, ',', '.') }}</span>
+                    @if ($transaction->status === ('paid' || 'cancelled'))
+                        <span class="">Rp
+                            {{ number_format((float) $transaction->return_amount, 0, ',', '.') }}</span>
+                    @else
+                        <span class="">Rp {{ number_format((float) $change, 0, ',', '.') }}</span>
+                    @endif
                 </div>
             </div>
             @if (!$isInvoice || $transaction->status === 'pending')
@@ -119,18 +136,22 @@
     </div>
 
     {{-- right content --}}
+    @if (!$isInvoice)
     <div class="w-full p-6 bg-white dark:bg-neutral-900 rounded shadow">
         {{-- Form pembayaran --}}
         <div class="mb-4">
             <label>Status Pembayaran</label>
             @if ($isInvoice && $transaction->status !== 'pending')
-                <select class="form-control" disabled>
+                <select class="form-control">
                     <option class="dark:bg-neutral-600" value="pending"
-                        @if ($status === 'pending') selected @endif>Pending</option>
+                        @if ($status === 'pending') selected @endif
+                        @if (in_array($transaction->status, ['paid', 'cancelled'])) disabled @endif>Pending</option>
                     <option class="dark:bg-neutral-600" value="paid"
-                        @if ($status === 'paid') selected @endif>Paid</option>
+                        @if ($status === 'paid') selected @endif
+                        @if (in_array($transaction->status, ['paid', 'cancelled'])) disabled @endif>Paid</option>
                     <option class="dark:bg-neutral-600" value="cancelled"
-                        @if ($status === 'cancelled') selected @endif>Cancelled</option>
+                        @if ($status === 'cancelled') selected @endif
+                        @if (in_array($transaction->status, ['paid', 'cancelled'])) disabled @endif>Cancelled</option>
                 </select>
             @else
                 <select wire:model="status" wire:change="statusChanged" class="form-control">
@@ -149,51 +170,54 @@
 
         @if ($status === 'paid')
             <div class="mb-4">
-                <label>Uang dari Pembeli</label>
 
-                {{-- input masukkan nominal  --}}
-                <input type="number" name="paid_amount" wire:model.live.debounce.250ms="paid_amount"
-                    wire:key="paid_amount_{{ $paid_amount }}" class="form-control" placeholder="Masukkan nominal">
+                @if ($transaction->status === 'pending')
+                    <label>Uang dari Pembeli</label>
+                    {{-- input masukkan nominal  --}}
+                    <input type="number" name="paid_amount" wire:model.live.debounce.250ms="paid_amount"
+                        wire:key="paid_amount_{{ $paid_amount }}" class="form-control" placeholder="Masukkan nominal">
 
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.75rem;">
-                    <!-- Number buttons -->
-                    @foreach (range(1, 9) as $num)
+                    <div
+                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.75rem;">
+                        <!-- Number buttons -->
+                        @foreach (range(1, 9) as $num)
+                            <button type="button"
+                                class="btn items-center justify-center bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800  text-lg font-bold py-3"
+                                wire:click="appendToAmount({{ $num }})">{{ $num }}</button>
+                        @endforeach
                         <button type="button"
-                            class="btn items-center justify-center bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800  text-lg font-bold py-3"
-                            wire:click="appendToAmount({{ $num }})">{{ $num }}</button>
-                    @endforeach
-                    <button type="button"
-                        class="btn items-center justify-center bg-warning-100 hover:bg-warning-200 text-warning-600 text-lg font-bold py-3 "
-                        wire:click="eraseAmount()">
-                        <iconify-icon icon="mdi:erase" class="icon text-lg"></iconify-icon>
-                    </button>
-                    {{-- ...existing code... --}}
-                    <button type="button"
-                        class="btn items-center justify-center bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 text-lg font-bold py-3"
-                        wire:click="appendToAmount(0)">0</button>
-                    <button type="button"
-                        class="btn items-center justify-center bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 text-lg font-bold py-3"
-                        wire:click="appendToAmount('000')">000</button>
-                    <button type="button"
-                        class="btn items-center justify-center bg-danger-100 hover:bg-danger-200 text-danger-600 text-lg font-bold py-3"
-                        wire:click="clearAmount()">C</button>
-                </div>
+                            class="btn items-center justify-center bg-warning-100 hover:bg-warning-200 text-warning-600 text-lg font-bold py-3 "
+                            wire:click="eraseAmount()">
+                            <iconify-icon icon="mdi:erase" class="icon text-lg"></iconify-icon>
+                        </button>
+                        {{-- ...existing code... --}}
+                        <button type="button"
+                            class="btn items-center justify-center bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 text-lg font-bold py-3"
+                            wire:click="appendToAmount(0)">0</button>
+                        <button type="button"
+                            class="btn items-center justify-center bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 text-lg font-bold py-3"
+                            wire:click="appendToAmount('000')">000</button>
+                        <button type="button"
+                            class="btn items-center justify-center bg-danger-100 hover:bg-danger-200 text-danger-600 text-lg font-bold py-3"
+                            wire:click="clearAmount()">C</button>
+                    </div>
 
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    <!-- Quick amount buttons -->
-                    <button type="button"
-                        class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
-                        wire:click="setQuickAmount({{ $transaction->total_amount }})">Uang Pas</button>
-                    <button type="button"
-                        class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
-                        wire:click="setQuickAmount(50000)">Rp 50.000</button>
-                    <button type="button"
-                        class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
-                        wire:click="setQuickAmount(100000)">Rp 100.000</button>
-                    <button type="button"
-                        class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
-                        wire:click="setQuickAmount(200000)">Rp 200.000</button>
-                </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <!-- Quick amount buttons -->
+                        <button type="button"
+                            class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
+                            wire:click="setQuickAmount({{ $transaction->total_amount }})">Uang Pas</button>
+                        <button type="button"
+                            class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
+                            wire:click="setQuickAmount(50000)">Rp 50.000</button>
+                        <button type="button"
+                            class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
+                            wire:click="setQuickAmount(100000)">Rp 100.000</button>
+                        <button type="button"
+                            class="btn items-center justify-center bg-primary-100 hover:bg-primary-200 text-primary-600"
+                            wire:click="setQuickAmount(200000)">Rp 200.000</button>
+                    </div>
+                @endif
 
 
 
@@ -212,5 +236,6 @@
         @endif
 
     </div>
+    @endif
 
 </div>

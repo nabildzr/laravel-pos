@@ -38,14 +38,14 @@
                         class="border border-neutral-200 dark:border-neutral-600 rounded-lg border-separate	">
                         <thead>
                             <tr>
-                                <th scope="col" class="text-neutral-800 dark:text-white">
+                                {{-- <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="form-check style-check flex items-center">
                                         <input class="form-check-input" id="serial" type="checkbox">
                                         <label class="ms-2 form-check-label" for="serial">
                                             S.L
                                         </label>
                                     </div>
-                                </th>
+                                </th> --}}
                                 <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="flex items-center gap-2">
                                         ID
@@ -118,13 +118,17 @@
                         <tbody>
                             @foreach ($transactions as $expense)
                                 <tr>
-                                    <td>
+                                    {{-- <td>
                                         <div class="form-check style-check flex items-center">
                                             <input class="form-check-input" type="checkbox">
                                             <label class="ms-2 form-check-label">
                                                 {{ $expense->id }}
                                             </label>
                                         </div>
+                                    </td> --}}
+                                    <td>
+                                        <h6 class="text-base mb-0 font-bold grow">{{ $expense->id ?? '0' }}
+                                        </h6>
                                     </td>
                                     <td>
                                         <h6 class="text-base mb-0 font-bold grow">{{ $expense->member->name ?? 'Customer' }}
@@ -179,8 +183,6 @@
                                 </tr>
 
                                 <x-confirm-delete-modal :modalId="'delete-modal-' . $expense->id" :route="route('actionDeleteExpense', $expense->id)" />
-
-                                {{-- @include('layout.confirmDeleteModal', ) --}}
                             @endforeach
 
                         </tbody>

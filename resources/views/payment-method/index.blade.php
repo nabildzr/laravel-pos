@@ -147,10 +147,10 @@
 
                                     </td>
                                     <td>
-                                        <a href="javascript:void(0)"
+                                        {{-- <a href="javascript:void(0)"
                                             class="w-8 h-8 bg-primary-50 dark:bg-primary-600/10 text-primary-600 dark:text-primary-400 rounded-full inline-flex items-center justify-center">
                                             <iconify-icon icon="iconamoon:eye-light"></iconify-icon>
-                                        </a>
+                                        </a> --}}
                                         <a href="{{ url("/payment-method/edit/$paymentMethod->id") }}"
                                             class="w-8 h-8 bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 rounded-full inline-flex items-center justify-center">
                                             <iconify-icon icon="lucide:edit"></iconify-icon>
