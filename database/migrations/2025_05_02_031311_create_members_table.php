@@ -12,18 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('members', function (Blueprint $table) {
-            $table->increments('customer_id');
+            $table->bigIncrements('id')->startingValue(17250);
             $table->string('name');
             $table->string('phone_number')->unique();
             $table->string('email')->unique();
-            $table->text('description');
+            $table->text('address');
+            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     */
+    */
     public function down(): void
     {
         Schema::dropIfExists('members');

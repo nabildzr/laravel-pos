@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'password',
     ];
 
@@ -48,6 +49,26 @@ class User extends Authenticatable
 
     protected function product()
     {
-        return $this->hasMany(Products::class, 'created_by');
+        return $this->hasMany(Product::class, 'created_by');
+    }
+
+    protected function category()
+    {
+        return $this->hasMany(Category::class, 'created_by');
+    }
+
+    protected function member()
+    {
+        return $this->hasMany(Member::class, 'created_by');
+    }
+
+    protected function transaction()
+    {
+        return $this->hasMany(Transaction::class, 'created_by');
+    }
+    
+    protected function paymentMethod()
+    {
+        return $this->hasMany(PaymentMethod::class, 'created_by');
     }
 }

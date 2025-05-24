@@ -21,3 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+public/expenses_proof
+public/products
+public/storage/expenses_proof
+public/storage/products
