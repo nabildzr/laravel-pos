@@ -18,9 +18,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone_number')->nullable()->default(null);
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('profile_image')->nullable();
+            $table->date('join_date');
+            $table->string('address')->nullable();
+            $table->integer('otp_code')->nullable();
+            $table->date('otp_expired_at')->nullable();
             $table->string('password');
             $table->boolean('is_active')->default(false);
-            $table->enum('role', ['user', 'admin', 'super_admin'])->default('user');
+            $table->enum('role', ['operator', 'admin', 'super_admin'])->default('operator');
             $table->rememberToken();
             $table->timestamps();
         });

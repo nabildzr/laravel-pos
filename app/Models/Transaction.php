@@ -9,6 +9,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'member_id',
+        'cashier',
         'total_amount',
         'paid_amount',
         'return_amount',
@@ -17,9 +18,13 @@ class Transaction extends Model
         'created_by',
     ];
 
+    public function transactionDetails()
+    {
+        return $this->hasMany(TransactionDetail::class);
+    }
     public function details()
     {
-        return $this->hasMany(TransactionDetail::class, );
+        return $this->hasMany(TransactionDetail::class);
     }
 
     public function member()
@@ -36,4 +41,6 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+
 }

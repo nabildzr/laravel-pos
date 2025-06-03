@@ -104,8 +104,8 @@ class OrderComponent extends Component
             if ($item['id'] == $productId) {
                 $qty = max(1, min((int)$quantity, $item['stock']));
                 $this->cart[$index]['quantity'] = $qty;
-                $this->isWarning = false;
-                $this->message = null;
+                $this->isWarning = false
+;                $this->message = null;
                 break;
             }
         }
@@ -122,7 +122,7 @@ class OrderComponent extends Component
 
                 if ($this->cart[$index]['quantity'] < $maxStock) {
                     $this->cart[$index]['quantity']++;
-                    $this->cart[$index]['stock'] = $maxStock; // update stok di cart
+                    $this->cart[$index]['stock'] = $maxStock; 
                     $this->isWarning = false;
                     $this->message = null;
                 } else {

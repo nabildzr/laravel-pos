@@ -21,7 +21,7 @@
                 </div>
                 <div class="p-4 md:p-5 space-y-4">
                     <p class="text-lg text-gray-700 dark:text-gray-300">
-                        Are you sure you want to <span class="font-bold">delete</span> this data? This action cannot be
+                        Are you sure you want to <span class="font-bold">delete</sp$an> this data? This action cannot be
                         undone.
                     </p>
                 </div>

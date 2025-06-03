@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExpenseExport;
 use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -26,7 +27,11 @@ class ExpenseController extends Controller
      */
     public function create()
     {
-        return view('expenses.form');
+        $expenseCategories = ExpenseCategory::orderBy('created_at', 'desc')->get();
+
+        return view('expenses.form')->with([
+            'expenseCategories' => $expenseCategories
+        ]);
     }
 
     public function print(Request $request)
@@ -63,7 +68,7 @@ class ExpenseController extends Controller
 
         $fields =
             [
-                'category' => 'required|string',
+                'expense_category_id' => 'required|exists:expense_categories,id',
                 'amount' => 'required|numeric|min:0',
                 'date' => 'required|date',
                 'proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
@@ -114,9 +119,11 @@ class ExpenseController extends Controller
     public function edit(string $id)
     {
         $result = Expense::findOrFail($id);
+        $expenseCategories = ExpenseCategory::orderBy('created_at', 'desc')->get();
 
         return view('expenses.form')->with([
-            'result' => $result
+            'result' => $result,
+            'expenseCategories' => $expenseCategories
         ]);
     }
 
@@ -128,7 +135,7 @@ class ExpenseController extends Controller
         $expense = Expense::findOrFail($id);
 
         $fields = [
-            'category' => 'required|string',
+            'expense_category_id' => 'required|exists:expense_categories,id',
             'amount' => 'required|numeric|min:0',
             'date' => 'required|date',
             'proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
@@ -172,6 +179,59 @@ class ExpenseController extends Controller
         } else {
             return back()->with([
                 'error' => "Failed to delete {{ $expense->id }} Expense"
+            ]);
+        }
+    }
+
+
+    // approval //
+    public function approve(string $id)
+    {
+        $expense = Expense::findOrFail($id);
+
+        if ($expense->status != 'pending') {
+            return back()->with([
+                'error' => 'Expense has already been ' . $expense->status
+            ]);
+        }
+
+        $expense->status = 'approved';
+        $expense->approved_by = Auth::id();
+        $expense->approved_at = now();
+
+        if ($expense->save()) {
+            return back()->with([
+                'success' => 'Expense successfully approved'
+            ]);
+        } else {
+            return back()->with([
+                'error' => 'Failed to approve expense'
+            ]);
+        }
+    }
+
+    public function reject(Request $request, string $id)
+    {
+        $expense = Expense::findOrFail($id);
+
+        // proses
+        if ($expense->status != 'pending') {
+            return back()->with([
+            'error' => 'Expense has already been ' . $expense->status
+            ]);
+        }
+
+        $expense->status = 'rejected';
+        $expense->approved_by = Auth::id();
+        $expense->approved_at = now();
+
+        if ($expense->save()) {
+            return back()->with([
+            'success' => 'Expense successfully rejected'
+            ]);
+        } else {
+            return back()->with([
+            'error' => 'Failed to reject expense'
             ]);
         }
     }

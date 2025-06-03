@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->string('category');
             $table->string('proof');
             $table->integer('amount');
             $table->text('description');
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->boolean('is_approved')->default(false);
+            $table->foreignId('approved_by')->nullable()->constrained('users');
+            // $table->text('rejection_reason')->nullable(); // nanti ajah (masih sederhana & secepatnya)
+            $table->timestamp('approved_at')->nullable();
+            $table->foreignId('created_by')->constrained('users');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

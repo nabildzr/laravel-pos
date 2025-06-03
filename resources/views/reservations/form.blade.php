@@ -39,14 +39,8 @@
                                 <span class="icon">
                                     <iconify-icon icon="iconamoon:category-fill"></iconify-icon>
                                 </span>
-                                <select name="expense_category_id" class="form-control">
-                                    @foreach($expenseCategories as $category)
-                                        <option value="{{ $category->id }}" class="bg-neutral-500" 
-                                            {{ old('expense_category_id', empty($result) ? '' : $result->expense_category_id) == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="category" class="form-control" placeholder="Enter expense name"
+                                    value="{{ old('category', empty($result) ? '' : "$result->category") }}">
                             </div>
                         </div>
                         <div class="col-span-12">

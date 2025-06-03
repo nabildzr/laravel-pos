@@ -34,7 +34,8 @@
     </main>
 
     <!-- ..::  scripts  start ::.. -->
-    <x-script  script='{!! isset($script) ? $script : "" !!}' />
+    @stack('scripts')
+    <x-script script='{!! isset($script) ? $script : "" !!}' />
     <!-- ..::  scripts  end ::.. -->
 
 </body>

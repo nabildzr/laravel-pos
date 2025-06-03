@@ -7,7 +7,7 @@ use App\Models\Transaction;
 
 class TransactionPayment extends Component
 {
-    public $id; // <--- tambahkan ini
+    public $id; 
     public $transaction;
     public $transactionDetail;
     public $status = 'pending';
@@ -23,7 +23,6 @@ class TransactionPayment extends Component
         $this->status = $this->transaction->status ?? 'pending';
         $this->paid_amount = in_array($this->transaction->status, ["paid", "cancelled"]) ? $this->transaction->paid_amount : $this->paid_amount;
         $this->change = in_array($this->transaction->status, ["paid", "cancelled"]) ? $this->transaction->return_amount : $this->change;
-
     }
 
     public function render()
@@ -57,9 +56,21 @@ class TransactionPayment extends Component
     {
         $this->transaction->status = $this->status;
         if ($this->status === 'paid') {
-
             $this->transaction->paid_amount = $this->paid_amount;
             $this->transaction->return_amount = $this->change;
+
+            // Kurangi stok produk
+            // Ambil ulang relasi transactionDetails agar data terbaru
+            $this->transaction->load('transactionDetails.product');
+
+            if ($this->transaction->transactionDetails && count($this->transaction->transactionDetails)) {
+                foreach ($this->transaction->transactionDetails as $detail) {
+                    if ($detail->product) {
+                        $detail->product->stock = max(0, $detail->product->stock - $detail->quantity);
+                        $detail->product->save();
+                    }
+                }
+            }
         }
 
         if ($this->status === 'pending') {

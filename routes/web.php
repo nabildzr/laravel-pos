@@ -13,11 +13,15 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CryptocurrencyController;
+use App\Http\Controllers\DiningTableController;
+use App\Http\Controllers\ExpenseCategoriesController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TransactionController;
 use App\Livewire\TransactionPayment;
 
@@ -33,89 +37,151 @@ Route::get('/', [DashboardController::class, 'index'])->middleware(['auth']);
 Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout')->middleware(['auth']);
 
 
+Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
 
-// category
-Route::middleware(['auth'])->prefix('category')->controller(CategoryController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/create', 'create')->name('newCategory');
-    Route::post('/create', 'store')->name('actionNewCategory');
-    Route::get('/edit/{id}', 'edit')->name('editCategory');
-    Route::put('/edit/{id}', 'update')->name('actionEditCategory');
-    Route::delete('/delete/{id}', 'destroy')->name('actionDeleteCategory');
 
-    // search
-    Route::get('/categories/search', 'search')->name('categories.search');
+    // just auth
+    Route::middleware(['auth'])->group(function() {
+        Route::get('/receipt/{transaction}', [ReceiptController::class, 'print'])->name('receipt.print');
+    });
+
+    // Users
+    Route::middleware(['auth'])->prefix('users')->group(function () {
+        Route::controller(UsersController::class)->group(function () {
+            Route::get('/add-user', 'addUser')->name('addUser');
+            Route::get('/users-grid', 'usersGrid')->name('usersGrid');
+            Route::get('/users-list', 'usersList')->name('usersList');
+            Route::get('/view-profile', 'viewProfile')->name('viewProfile');
+        });
+    });
+
+    // category
+    Route::middleware(['auth', 'multi_user'])->prefix('category')->controller(CategoryController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/create', 'create')->name('newCategory');
+        Route::post('/create', 'store')->name('actionNewCategory');
+        Route::get('/edit/{id}', 'edit')->name('editCategory');
+        Route::put('/edit/{id}', 'update')->name('actionEditCategory');
+        Route::delete('/delete/{id}', 'destroy')->name('actionDeleteCategory');
+
+        // search
+        Route::get('/categories/search', 'search')->name('categories.search');
+    });
+
+
+
+    // product
+    Route::middleware(['auth','multi_user'])->prefix('product')->controller(ProductController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/create', 'create')->name('newProduct');
+        Route::post('/create', 'store')->name('actionNewProduct');
+        Route::get('/edit/{id}', 'edit')->name('editProduct');
+        Route::put('/edit/{id}', 'update')->name('actionEditProduct');
+        Route::put('/add-stock/{id}', 'addStockProduct')->name('actionAddStockProduct');
+        Route::delete('/delete/{id}', 'destroy')->name('actionDeleteProduct');
+
+
+        // barcode
+        Route::get('/{id}/print-barcode', [ProductController::class, 'printBarcode'])->name('product.print-barcode');
+    });
+
+
+    // product  
+    Route::middleware(['auth'])->prefix('payment-method')->controller(PaymentMethodController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/create', 'create')->name('newPaymentMethod');
+        Route::post('/create', 'store')->name('actionNewPaymentMethod');
+        Route::get('/edit/{id}', 'edit')->name('editPaymentMethod');
+        Route::put('/edit/{id}', 'update')->name('actionEditPaymentMethod');
+        Route::delete('/delete/{id}', 'destroy')->name('actionDeletePaymentMethod');
+    });
+
+
+    Route::middleware(['auth'])->prefix('member')->controller(MemberController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/create', 'create')->name('newMember');
+        Route::post('/create', 'store')->name('actionNewMember');
+        Route::get('/edit/{id}', 'edit')->name('editMember');
+        Route::put('/edit/{id}', 'update')->name('actionEditMember');
+        // Hanya user yang bukan operator yang bisa mengakses delete
+        Route::middleware(['multi_user'])->group(function () {
+            Route::delete('/delete/{id}', 'destroy')->name('actionDeleteMember');
+        });
+    });
+
+
+
+    // expense
+    Route::middleware(['auth'])->prefix('expense')->controller(ExpenseController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::middleware(['multi_user'])->group(function () {
+            Route::get('/edit/{id}', 'edit')->name('editExpense');
+            Route::put('/edit/{id}', 'update')->name('actionEditExpense');
+        });
+        Route::get('/create', 'create')->name('newExpense');
+        Route::post('/create', 'store')->name('actionNewExpense');
+        Route::delete('/delete/{id}', 'destroy')->name('actionDeleteExpense');
+
+        Route::post('/print', 'print')->name('printExpenses');
+        Route::post('/import', 'import')->name('importExpenses');
+        Route::post('/export', 'export')->name('exportExpenses');
+    });
+
+    Route::middleware(['auth'])->prefix('expense')->controller(ExpenseController::class)->group(function () {
+        Route::post('/{id}/approve', [ExpenseController::class, 'approve'])->name('expense.approve');
+        Route::post('/{id}/reject', [ExpenseController::class, 'reject'])->name('expense.reject');
+    });
+
+    // expense categories
+    Route::middleware(['auth', 'multi_user'])->prefix('expense-categories')->controller(ExpenseCategoriesController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/create', 'create')->name('newExpenseCategory');
+        Route::post('/create', 'store')->name('actionNewExpenseCategory');
+        Route::get('/edit/{id}', 'edit')->name('editExpenseCategory');
+        Route::put('/edit/{id}', 'update')->name('actionEditExpenseCategory');
+        Route::delete('/delete/{id}', 'destroy')->name('actionDeleteExpenseCategory');
+    });
+
+    // order
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/order', [OrderController::class, 'index']);
+    });
+
+    // transaction
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction');
+        Route::get('/transaction/{id}/payment', [TransactionController::class, 'show'])->name('transaction.payment');
+        Route::get('/invoice/{id}', [TransactionController::class, 'showInvoice'])->name('transaction.invoice');
+    });
+
+    // reservasi
+    Route::middleware(['auth'])->prefix('reservations')->controller(ReservationController::class)->group(function () {
+        Route::get('/', 'index')->name('reservations');
+        Route::post('/', 'cancel')->name('actionCancelReservation');
+        Route::post('/create', 'store')->name('actionNewReservation');
+        Route::get('/{id}', 'edit')->name('actionEditReservation');
+        Route::put('/{id}', 'update')->name('actionUpdateReservation');
+        Route::delete('/delete/{id}', 'delete')->name('actionDeleteReservation');
+    });
+
+    // tables
+    Route::middleware(['auth'])->prefix('tables')->controller(DiningTableController::class)->group(function () {
+        Route::get('/', 'index')->name('tables');
+        Route::get('/create', 'create')->name('newDiningTable');
+        Route::post('/create', 'store')->name('actionNewDiningTable');
+        Route::get('/edit/{id}', 'edit')->name('actionEditDiningTable');
+        Route::put('/edit/{id}', 'update')->name('actionUpdateDiningTable');
+        Route::delete('/delete/{id}', 'destroy')->name('actionDeleteDiningTable');
+    });
 });
 
 
 
-// product
-Route::middleware(['auth'])->prefix('product')->controller(ProductController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/create', 'create')->name('newProduct');
-    Route::post('/create', 'store')->name('actionNewProduct');
-    Route::get('/edit/{id}', 'edit')->name('editProduct');
-    Route::put('/edit/{id}', 'update')->name('actionEditProduct');
-    Route::put('/add-stock/{id}', 'addStockProduct')->name('actionAddStockProduct');
-    Route::delete('/delete/{id}', 'destroy')->name('actionDeleteProduct');
-
-
-    // barcode
-    Route::get('/{id}/print-barcode', [ProductController::class, 'printBarcode'])->name('product.print-barcode');
-});
-
-
-// product  
-Route::middleware(['auth'])->prefix('payment-method')->controller(PaymentMethodController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/create', 'create')->name('newPaymentMethod');
-    Route::post('/create', 'store')->name('actionNewPaymentMethod');
-    Route::get('/edit/{id}', 'edit')->name('editPaymentMethod');
-    Route::put('/edit/{id}', 'update')->name('actionEditPaymentMethod');
-    Route::delete('/delete/{id}', 'destroy')->name('actionDeletePaymentMethod');
-});
-
-
-Route::middleware(['auth'])->prefix('member')->controller(MemberController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/create', 'create')->name('newMember');
-    Route::post('/create', 'store')->name('actionNewMember');
-    Route::get('/edit/{id}', 'edit')->name('editMember');
-    Route::put('/edit/{id}', 'update')->name('actionEditMember');
-    Route::delete('/delete/{id}', 'destroy')->name('actionDeleteMember');
-});
 
 
 
-// category
-Route::middleware(['auth'])->prefix('expense')->controller(ExpenseController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/create', 'create')->name('newExpense');
-    Route::post('/create', 'store')->name('actionNewExpense');
-    Route::get('/edit/{id}', 'edit')->name('editExpense');
-    Route::put('/edit/{id}', 'update')->name('actionEditExpense');
-    Route::delete('/delete/{id}', 'destroy')->name('actionDeleteExpense');
+//---- template ----//----
 
-    Route::post('/print', 'print')->name('printExpenses');
-    Route::post('/import', 'import')->name('importExpenses');
-    Route::post('/export', 'export')->name('exportExpenses');
-});
-
-
-
-
-
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/order', [OrderController::class, 'index']);
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction');
-    Route::get('/transaction/{id}/payment', [TransactionController::class, 'show'])->name('transaction.payment');
-    Route::get('/invoice/{id}', [TransactionController::class, 'showInvoice'])->name('transaction.invoice');
-});
 
 Route::middleware(['auth'])->controller(HomeController::class)->group(function () {
     Route::get('calendar-Main', 'calendarMain')->name('calendarMain');
@@ -130,11 +196,6 @@ Route::middleware(['auth'])->controller(HomeController::class)->group(function (
 });
 
 
-
-
-
-
-//---- template ----//----
 
 
 // chart

@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'setUserInactiveOnSessionExpire' => \App\Http\Middleware\SetUserInactiveOnSessionExpire::class,
+            'admin' => \App\Http\Middleware\Admin::class,
+            'super_admin' => \App\Http\Middleware\SuperAdmin::class,
+            'multi_user' => \App\Http\Middleware\MultiUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

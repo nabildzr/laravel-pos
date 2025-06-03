@@ -18,9 +18,15 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'full_name',
         'name',
         'email',
         'role',
+        'join_date',
+        'address',
+        'profile_image',
+        'is_active',
+        'phone_number',
         'password',
     ];
 
@@ -47,6 +53,17 @@ class User extends Authenticatable
         ];
     }
 
+    // permission
+    public function hasPermission($permission)
+    {
+        // Example: allow all for 'owner' role, customize as needed
+        if ($this->role === 'owner') {
+            return true;
+        }
+
+        return false;
+    }
+
     protected function product()
     {
         return $this->hasMany(Product::class, 'created_by');
@@ -66,9 +83,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class, 'created_by');
     }
-    
+
     protected function paymentMethod()
     {
         return $this->hasMany(PaymentMethod::class, 'created_by');
+    }
+    protected function expenseCategory()
+    {
+        return $this->hasMany(ExpenseCategory::class, 'created_by');
     }
 }

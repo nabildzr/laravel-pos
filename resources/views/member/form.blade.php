@@ -64,7 +64,7 @@
                                 <span class="icon">
                                     <iconify-icon icon="solar:phone-bold"></iconify-icon>
                                 </span>
-                                <input type="number" name="phone_number" class="form-control"
+                                <input type="text" name="phone_number" class="form-control"
                                     placeholder="Enter phone Number"
                                     value="{{ old('phone_number', $result->phone_number ?? '') }}">
                             </div>

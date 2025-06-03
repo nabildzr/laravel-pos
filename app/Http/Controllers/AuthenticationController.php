@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -22,7 +23,9 @@ class AuthenticationController extends Controller
         ]);
 
         if (Auth::attempt($data)) {
-
+            if (Auth::check()) {
+                User::where('id', Auth::user()->id)->update(['is_active' => true]);
+            }
             return redirect()->intended('/');
         }
 
@@ -44,6 +47,9 @@ class AuthenticationController extends Controller
 
     public function logout(Request $request)
     {
+        if (Auth::check()) {
+            User::where('id', Auth::user()->id)->update(['is_active' => false]);
+        }
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

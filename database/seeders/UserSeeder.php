@@ -1,22 +1,41 @@
-
 <?php
 
+namespace Database\Seeders;
+
 use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        User::factory()->create([
+            'full_name' => 'Raman',
+            'name' => 'Ramen',
+            'profile_image' => '',
+            'email' => 'raman@example.com',
+            'join_date' => '2025-02-03',
+            'phone_number' => '012345678910',
+            'password' => bcrypt('12345'),
+            'is_active' => true,
+            'role' => 'admin'
+        ]);
 
-  public function run()
-  {
-    User::factory()->create([
-      'name' => 'Test User',
-      'email' => 'test@example.com',
-      'phone_number' => '012345678910',
-      'full_name' => 'Test User Ganteng',
-      'password' => bcrypt('12345'),
-      'is_active' => true,
-      'role' => 'admin'
-    ]);
-  }
+
+        User::factory()->create([
+            'name' => 'Remen',
+            'full_name' => 'Ruman',
+            'email' => 'remen@example.com',
+            'profile_image' => '',
+            'join_date' => '2025-02-03',
+            'phone_number' => '012345678910',
+            'password' => bcrypt('12345'),
+            'is_active' => false,
+            'role' => 'operator'
+        ]);
+    }
 }
