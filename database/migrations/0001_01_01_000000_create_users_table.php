@@ -45,12 +45,13 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-        Schema::create('login_history', function (Blueprint $table) {
+        Schema::create('login_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('ip_address', 45)->nullable();
-            $table->string('user_agent')->nullable();
-            $table->string('status')->default('success'); // success/failed
+            $table->timestamp('login_at')->useCurrent();
+            $table->string('ip_address')->nullable();
+            $table->string('status')->default('success');
+            $table->text('user_agent')->nullable();
             $table->timestamps();
         });
     }

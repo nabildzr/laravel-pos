@@ -28,7 +28,7 @@ class UsersController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'phone_number' => 'nullable|string|max:20',
-            'role' => 'required|string|in:user,staff,admin,super_admin',
+            'role' => 'required|string|in:operator,admin,super_admin',
             'is_active' => 'required|boolean',
             'profile_image' => 'nullable|image|max:2048',
         ]);
@@ -114,7 +114,10 @@ class UsersController extends Controller
     public function viewProfile()
     {
         $user = Auth::user();
-        $loginHistory = $user->loginHistory()->orderBy('created_at', 'desc')->take(10)->get();
+        $loginHistory = \App\Models\LoginHistory::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
 
         return view('users.viewProfile', compact('user', 'loginHistory'));
     }

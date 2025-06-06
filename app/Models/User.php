@@ -95,7 +95,7 @@ class User extends Authenticatable
         return $this->hasMany(ExpenseCategory::class, 'created_by');
     }
 
-     public function loginHistory()
+    public function loginHistory()
     {
         return $this->hasMany(LoginHistory::class);
     }

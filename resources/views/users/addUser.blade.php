@@ -81,11 +81,12 @@
                                 <div class="mb-5">
                                     <label for="role" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Role <span class="text-danger-600">*</span></label>
                                     <select class="form-control rounded-lg form-select" id="role" name="role" required>
-                                        <option value="">Select Role</option>
-                                        <option value="user" {{ ($isEdit && $user->role === 'user') || old('role') === 'user' ? 'selected' : '' }}>User</option>
-                                        <option value="staff" {{ ($isEdit && $user->role === 'staff') || old('role') === 'staff' ? 'selected' : '' }}>Staff</option>
-                                        <option value="admin" {{ ($isEdit && $user->role === 'admin') || old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
-                                        <option value="super_admin" {{ ($isEdit && $user->role === 'super_admin') || old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                                        <option class="dark:bg-neutral-700" value="">Select Role</option>
+                                        <option class="dark:bg-neutral-700" value="operator" {{ ($isEdit && $user->role === 'operator') || old('role') === 'operator' ? 'selected' : '' }}>Operator</option>
+                                        <option class="dark:bg-neutral-700" value="admin" {{ ($isEdit && $user->role === 'admin') || old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                       @if (Auth::user()->role === "super_admin")
+                                            <option class="dark:bg-neutral-700" value="super_admin" {{ ($isEdit && $user->role === 'super_admin') || old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                                       @endif
                                     </select>
                                     @error('role')
                                         <span class="text-danger-600 text-sm">{{ $message }}</span>
