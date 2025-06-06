@@ -10,9 +10,9 @@
     </button>
     <div>
         <a href="{{ url('/') }}" class="sidebar-logo">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="site logo" class="light-logo">
-            <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo">
-            <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
+            <img src="{{ asset('assets/images/logo-dark.png') }}" style="margin-bottom: 4px; margin-top: 4px; width: 35px" alt="site logo" class="light-logo">
+            <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo" style="margin-bottom: 4px; margin-top: 4px; width: 35px">
+            <img src="{{ asset('assets/images/logo-dark.png') }}" alt="site logo" class="logo-icon" style="margin-bottom: 4px; margin-top: 4px; width: 35px">
         </a>
     </div>
     <div class="sidebar-menu-area">
@@ -35,10 +35,6 @@
                         <li>
                             <a href="{{ route('usersList') }}"><i
                                     class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Users List</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('usersGrid') }}"><i
-                                    class="ri-circle-fill circle-icon text-warning-600 w-auto"></i> Users Grid</a>
                         </li>
                         <li>
                             <a href="{{ route('addUser') }}"><i
@@ -132,6 +128,39 @@
                     <span>Tables</span>
                 </a>
             </li>
+
+            <li class="sidebar-menu-group-title">Report</li>
+            <li>
+                <a href="{{ url('/reports/expense') }}">
+                    <iconify-icon icon="solar:cash-out-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Expenses</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/reports/sales') }}">
+                    <iconify-icon icon="solar:cash-out-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Sales</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/reports/transaction-summary') }}">
+                    <iconify-icon icon="solar:cash-out-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Transaction Summary</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/reports/product-sales') }}">
+                    <iconify-icon icon="solar:cash-out-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Product Summary</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/reports/transaction-info') }}">
+                    <iconify-icon icon="solar:cash-out-bold-duotone" class="menu-icon"></iconify-icon>
+                    <span>Transaction Info</span>
+                </a>
+            </li>
+          
 
 
             <li class="sidebar-menu-group-title">Order</li>

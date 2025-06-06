@@ -23,7 +23,8 @@
 
             <div class="card-body">
                 @include('layout.feedback')
-                <form action="{{ empty($result) ? route('actionNewDiningTable') : route('actionEditDiningTable', "$result->id") }}"
+                <form
+                    action="{{ empty($result) ? route('actionNewDiningTable') : route('actionEditDiningTable', "$result->id") }}"
                     method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -46,15 +47,41 @@
                         </div>
                         <div class="col-span-12">
                             <label class="form-label">Status</label>
+                            @if (!empty($result))
+                                <div class="mb-2">
+                                    <span
+                                        class="inline-block px-3 py-1 rounded bg-blue-100 text-blue-800 font-semibold text-sm">
+                                        Current: {{ ucfirst(str_replace('_', ' ', $result->status)) }}
+                                    </span>
+                                </div>
+                            @endif
+                            @php
+                                $allStatuses = ['available', 'occupied', 'reserved', 'complete', 'out_of_service'];
+                                $canChangeSpecial = auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'super_admin');
+                                if (!empty($result)) {
+                                    if ($canChangeSpecial) {
+                                        // Admins can only change to complete, out_of_service, and available
+                                        $statuses = ['available', 'out_of_service'];
+                                    } else {
+                                        // Regular users can only change to available, occupied, reserved
+                                        $statuses = ['available', 'occupied', 'reserved'];
+                                    }
+                                    $selectedStatus = old('status', $result->status);
+                                    $isLockedStatus = in_array($result->status, ['occupied', 'reserved', 'out_of_service', 'complete']);
+                                } else {
+                                    // On create, only available
+                                    $statuses = ['available'];
+                                    $selectedStatus = 'available';
+                                    $isLockedStatus = false;
+                                }
+                            @endphp
+
                             <div class="icon-field">
                                 <span class="icon">
                                     <iconify-icon icon="mdi:checkbox-marked-circle-outline"></iconify-icon>
                                 </span>
-                                <select name="status" class="form-control">
-                                    @php
-                                        $statuses = ['available', 'occupied', 'reserved'];
-                                        $selectedStatus = old('status', empty($result) ? 'available' : $result->status);
-                                    @endphp
+                                <select name="status" class="form-control" required
+                                    @if (!$canChangeSpecial && !empty($result) && in_array($result->status, ['occupied', 'reserved', 'out_of_service', 'completed'])) disabled @endif>
                                     @foreach ($statuses as $status)
                                         <option class="bg-neutral-500" value="{{ $status }}"
                                             {{ $selectedStatus == $status ? 'selected' : '' }}>
@@ -62,6 +89,9 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                @if (!$canChangeSpecial && $isLockedStatus)
+                                    <input type="hidden" name="status" value="{{ $result->status }}">
+                                @endif
                             </div>
                         </div>
                         <div class="col-span-12">

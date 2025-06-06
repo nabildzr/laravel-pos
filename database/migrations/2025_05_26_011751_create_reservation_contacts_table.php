@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('reservation_contacts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('reservation_id')->constrained('reservations')->cascadeOnDelete();
             $table->string('name');
-            $table->string('email');
-            $table->text('address');
+            $table->string('email')->nullable();
+            $table->text('address')->nullable();
             $table->string('phone_number');
-            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });
     }

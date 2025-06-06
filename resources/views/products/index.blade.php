@@ -26,16 +26,36 @@
                 <div class="card-body">
                     @include('layout.feedback')
 
-                    <a href="{{ route('newProduct') }}"
-                        class="btn bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-5 py-[11px] mb-5">Create new
-                        Product</a>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <a href="{{ route('newProduct') }}"
+                            class="btn bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-5 py-[11px]">Create new
+                            Product</a>
+
+                        <a href="{{ route('product.export-csv') }}"
+                            class="btn bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-800 dark:text-white px-5 py-2 rounded-md font-semibold transition-colors ">
+                            <iconify-icon icon="foundation:page-export-csv" class="icon text-lg"></iconify-icon>
+                            Export CSV
+                        </a>
+
+                        <!-- Import CSV Button -->
+                        <button type="button" data-modal-target="import-modal" data-modal-toggle="import-modal"
+                            class="btn bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-800 dark:text-white px-5 py-2 rounded-md font-semibold transition-colors">
+                            <iconify-icon icon="carbon:document-import" class="icon text-lg"></iconify-icon>
+                            Import CSV
+                        </button>
+
+                        <a href="{{ route('product.download-template') }}"
+                            class="btn bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 text-neutral-800 dark:text-white px-5 py-2 rounded-md font-semibold transition-colors">
+                            <iconify-icon icon="material-symbols:download" class="icon text-lg"></iconify-icon>
+                            Download Template
+                        </a>
+                    </div>
                     <table id="selection-table"
                         class="border border-neutral-200 dark:border-neutral-600 rounded-lg border-separate	">
                         <thead>
                             <tr>
                                 <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="form-check style-check flex items-center">
-                                        <input class="form-check-input" id="serial" type="checkbox">
                                         <label class="ms-2 form-check-label" for="serial">
                                             S.L
                                         </label>
@@ -165,7 +185,6 @@
                                 <tr>
                                     <td>
                                         <div class="form-check style-check flex items-center">
-                                            <input class="form-check-input" type="checkbox">
                                             <label class="ms-2 form-check-label">
                                                 {{ $product->id }}
                                             </label>
@@ -284,6 +303,57 @@
 
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="import-modal" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+                        Import Products from CSV
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="import-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <form action="{{ route('product.import-csv') }}" method="POST" enctype="multipart/form-data"
+                        class="space-y-4">
+                        @csrf
+                        <div>
+                            <label for="file"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select CSV
+                                File</label>
+                            <input type="file" name="file" id="file"
+                                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                accept=".csv" required>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">CSV file with product data.</p>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Import Products
+                        </button>
+
+                        <div class="text-sm text-gray-500 dark:text-gray-300">
+                            <p>Format columns: name, sku, price, stock, unit, category, description, is_active, is_discount,
+                                discount_type, discount_value</p>
+                            <p class="mt-1">Download the template for correct format.</p>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

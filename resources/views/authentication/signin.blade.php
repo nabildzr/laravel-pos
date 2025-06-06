@@ -6,29 +6,21 @@
 
 <body class="dark:bg-neutral-800 bg-neutral-100 dark:text-white">
 
-    <section class="bg-white dark:bg-dark-2 flex flex-wrap min-h-[100vh]">
-        <div class="lg:w-1/2 lg:block hidden">
-            <div class="flex items-center flex-col h-full justify-center">
-                <img src="{{ asset('assets/images/auth/auth-img.png') }}" alt="">
-            </div>
-        </div>
+    <section class="bg-white dark:bg-dark-2 flex flex-wrap min-h-[100vh] justify-center">
+     
         <div class="lg:w-1/2 py-8 px-6 flex flex-col justify-center">
             <div class="lg:max-w-[464px] mx-auto w-full">
                 <div>
-                    <a href="" class="mb-2.5 max-w-[290px]">
+                    <a href="" class="mb-2.5 " style="width:50px">
                         <img src="{{ asset('assets/images/logo.png') }}" alt="">
                     </a>
-                    <h4 class="mb-3">Sign In to your Account</h4>
-                    <p class="mb-8 text-secondary-light text-lg">Welcome back! please enter your detail</p>
-                    @if (session('error'))
-                        <div class="alert alert-danger bg-danger-100 dark:bg-danger-600/25 text-danger-600 dark:text-danger-400 border-danger-100 px-6 py-[11px] mb-0 font-semibold text-lg rounded-lg flex items-center justify-between"
-                            role="alert">
-                            Oops!, {{!! session('error') !!}}
-                            <button class="remove-button text-danger-600 text-2xl line-height-1"> <iconify-icon
-                                    icon="iconamoon:sign-times-light" class="icon"></iconify-icon></button>
-                        </div>
-                    @endif
+                    <h4 class="mb-3">Sign In to your Account,</h4>
+                    <p class=" text-secondary-light text-lg">Mini Cafe/Restaurant </p>
+                    <p class="mb-8 text-secondary-light text-lg">Welcome back! please enter your detail, </p>
+                    @include('layout.feedback')
+
                 </div>
+
                 <form action="{{ route('actionSignIn') }}" method="POST">
                     @csrf
                     <div class="icon-field mb-4 relative">
@@ -55,12 +47,10 @@
                     <div class="mt-7">
                         <div class="flex justify-between gap-2">
                             <div class="flex items-center">
-                                <input class="form-check-input border border-neutral-300" type="checkbox" value=""
+                                <input class="form-check-input border border-neutral-300" type="checkbox" name="remember_me" value=""
                                     id="remeber">
                                 <label class="ps-2" for="remeber">Remember me </label>
                             </div>
-                            <a href="javascript:void(0)" class="text-primary-600 font-medium hover:underline">Forgot
-                                Password?</a>
                         </div>
                     </div>
 
@@ -68,28 +58,8 @@
                         class="btn btn-primary justify-center text-sm btn-sm px-3 py-4 w-full rounded-xl mt-8"> Sign
                         In</button>
 
-                    <div
-                        class="mt-8 center-border-horizontal text-center relative before:absolute before:w-full before:h-[1px] before:top-1/2 before:-translate-y-1/2 before:bg-neutral-300 before:start-0">
-                        <span class="bg-white dark:bg-dark-2 z-[2] relative px-4">Or sign in with</span>
-                    </div>
-                    <div class="mt-8 flex items-center gap-3">
-                        <button type="button"
-                            class="font-semibold text-neutral-600 dark:text-neutral-200 py-4 px-6 w-1/2 border rounded-xl text-base flex items-center justify-center gap-3 line-height-1 hover:bg-primary-50">
-                            <iconify-icon icon="ic:baseline-facebook"
-                                class="text-primary-600 text-xl line-height-1"></iconify-icon>
-                            Google
-                        </button>
-                        <button type="button"
-                            class="font-semibold text-neutral-600 dark:text-neutral-200 py-4 px-6 w-1/2 border rounded-xl text-base flex items-center justify-center gap-3 line-height-1 hover:bg-primary-50">
-                            <iconify-icon icon="logos:google-icon"
-                                class="text-primary-600 text-xl line-height-1"></iconify-icon>
-                            Google
-                        </button>
-                    </div>
-                    <div class="mt-8 text-center text-sm">
-                        <p class="mb-0">Don't have an account? <a href="{{ route('signup') }}"
-                                class="text-primary-600 font-semibold hover:underline">Sign Up</a></p>
-                    </div>
+
+
 
                 </form>
             </div>

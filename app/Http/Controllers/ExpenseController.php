@@ -22,6 +22,7 @@ class ExpenseController extends Controller
         ]);
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -217,7 +218,7 @@ class ExpenseController extends Controller
         // proses
         if ($expense->status != 'pending') {
             return back()->with([
-            'error' => 'Expense has already been ' . $expense->status
+                'error' => 'Expense has already been ' . $expense->status
             ]);
         }
 
@@ -227,11 +228,11 @@ class ExpenseController extends Controller
 
         if ($expense->save()) {
             return back()->with([
-            'success' => 'Expense successfully rejected'
+                'success' => 'Expense successfully rejected'
             ]);
         } else {
             return back()->with([
-            'error' => 'Failed to reject expense'
+                'error' => 'Failed to reject expense'
             ]);
         }
     }

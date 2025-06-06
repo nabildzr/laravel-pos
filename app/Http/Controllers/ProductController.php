@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductsExportCSV;
+use App\Imports\ProductsImportCSV;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -42,7 +45,7 @@ class ProductController extends Controller
             'is_discount' => 'required|boolean',
             'discount_type' => 'nullable|string|in:percent,amount',
             'discount' => 'nullable|numeric|min:0',
-            'sku' => 'required|string|max:100|unique:products,sku',
+            'sku' => 'string|max:100|unique:products,sku',
             'stock' => 'required|integer|min:0',
             'unit' => 'required|string|max:50',
             'description' => 'nullable|string',
@@ -160,7 +163,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category' => 'required|exists:categories,id',
-            'sku' => 'required|string|max:100|unique:products,sku,' . $id,
+            'sku' => 'string|max:100|unique:products,sku,' . $id,
             'stock' => 'required|integer|min:0',
             'is_discount' => 'required|boolean',
             'discount_type' => 'nullable|string|in:percent,amount',
@@ -220,5 +223,41 @@ class ProductController extends Controller
         } else {
             return back()->with('error', 'Failed to delete product');
         }
+    }
+
+    public function exportCsv()
+    {
+        return Excel::download(new ProductsExportCSV, 'products.csv');
+    }
+
+    public function importCsv(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:csv,txt|max:2048'
+        ]);
+
+        try {
+            Excel::import(new ProductsImportCSV, $request->file('file'));
+
+            return redirect()->back()
+                ->with('success', 'Products imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error importing products: ' . $e->getMessage());
+        }
+    }
+
+    // Download template CSV
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="product_import_template.csv"',
+        ];
+
+        $template = "name,sku,price,stock,unit,category,description,is_active,is_discount,discount_type,discount_value\n";
+        $template .= "Sample Product,SKU-001,10000,100,pcs,General,Product Description,Yes,No,percent,0\n";
+
+        return response($template, 200, $headers);
     }
 }

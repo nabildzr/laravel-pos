@@ -21,6 +21,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TransactionController;
 use App\Livewire\TransactionPayment;
@@ -30,20 +31,55 @@ Route::middleware(['guest'],)->controller(AuthenticationController::class)->grou
     Route::get('/forgot-password',  'forgotPassword')->name('forgotPassword');
     Route::get('/sign-in', 'signin')->name('login');
     Route::post('/sign-in', 'actionSignIn')->name('actionSignIn');
-    Route::get('/sign-up',  'signup')->name('signup');
 });
 
 Route::get('/', [DashboardController::class, 'index'])->middleware(['auth']);
 Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout')->middleware(['auth']);
 
 
+
+
+
 Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
 
+    Route::get('/add-user', [UsersController::class, 'addUser'])->name('addUser');
+    Route::post('/store-user', [UsersController::class, 'storeUser'])->name('storeUser');
+    Route::get('/edit-user/{id}', [UsersController::class, 'editUser'])->name('editUser');
+    Route::put('/update-user/{id}', [UsersController::class, 'updateUser'])->name('updateUser');
+    Route::get('/view-user/{id}', [UsersController::class, 'viewUserProfile'])->name('viewUserProfile');
+    Route::delete('/delete-user/{id}', [UsersController::class, 'deleteUser'])->name('deleteUser');
 
     // just auth
-    Route::middleware(['auth'])->group(function() {
+    Route::middleware(['auth'])->group(function () {
         Route::get('/receipt/{transaction}', [ReceiptController::class, 'print'])->name('receipt.print');
     });
+
+    // Reports
+    Route::middleware(['auth', 'multi_user'])->prefix('reports')->controller(ReportController::class)->group(function () {
+        Route::get('/expense', 'expenseView')->name('reports.expenses');
+        Route::get('/expense/export', 'exportExpense')->name('reports.expenses.export');
+        Route::get('/expense/export-pdf', 'exportExpensePDF')->name('reports.expenses.export-pdf');
+
+        Route::get('/sales', 'salesView')->name('reports.sales');
+        Route::get('/sales/export', 'exportSales')->name('reports.sales.export');
+        Route::get('/sales/export-pdf', 'exportSalesPDF')->name('reports.sales.export-pdf');
+
+
+        Route::get('/transaction-summary', 'transactionSummaryView')->name('reports.transaction-summary');
+        Route::get('/transaction-summary/export', 'exportTransactionSummary')->name('reports.transaction-summary.export');
+        Route::get('/transaction-summary/export-pdf', 'exportTransactionSummaryPDF')->name('reports.transaction-summary.export-pdf');
+
+
+        Route::get('/product-sales', 'productSalesView')->name('reports.product-sales');
+        Route::get('/product-sales/export', 'exportProductSales')->name('reports.product-sales.export');
+        Route::get('/product-sales/export-pdf', 'exportProductSalesPDF')->name('reports.product-sales.export-pdf');
+
+
+        Route::get('/transaction-info', 'transactionInfoView')->name('reports.transaction-info');
+        Route::get('/transaction-info/export', 'exportTransactionInfo')->name('reports.transaction-info.export');
+        Route::get('/transaction-info/export-pdf', 'exportTransactionInfoPDF')->name('reports.transaction-info.export-pdf');
+    });
+
 
     // Users
     Route::middleware(['auth'])->prefix('users')->group(function () {
@@ -71,7 +107,7 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
 
 
     // product
-    Route::middleware(['auth','multi_user'])->prefix('product')->controller(ProductController::class)->group(function () {
+    Route::middleware(['auth', 'multi_user'])->prefix('product')->controller(ProductController::class)->group(function () {
         Route::get('/', 'index');
         Route::get('/create', 'create')->name('newProduct');
         Route::post('/create', 'store')->name('actionNewProduct');
@@ -83,6 +119,11 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
 
         // barcode
         Route::get('/{id}/print-barcode', [ProductController::class, 'printBarcode'])->name('product.print-barcode');
+
+        // export import csv
+        Route::get('/export-csv', 'exportCsv')->name('product.export-csv');
+        Route::post('/import-csv', 'importCsv')->name('product.import-csv');
+        Route::get('/download-template', 'downloadTemplate')->name('product.download-template');
     });
 
 
@@ -156,12 +197,13 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
 
     // reservasi
     Route::middleware(['auth'])->prefix('reservations')->controller(ReservationController::class)->group(function () {
-        Route::get('/', 'index')->name('reservations');
-        Route::post('/', 'cancel')->name('actionCancelReservation');
-        Route::post('/create', 'store')->name('actionNewReservation');
-        Route::get('/{id}', 'edit')->name('actionEditReservation');
-        Route::put('/{id}', 'update')->name('actionUpdateReservation');
-        Route::delete('/delete/{id}', 'delete')->name('actionDeleteReservation');
+        Route::get('/', 'index')->name('reservations.index');
+        Route::get('/create', 'create')->name('reservations.create');
+        Route::post('/create', 'store')->name('reservations.store');
+        Route::get('/edit/{id}', 'edit')->name('reservations.edit');
+        // Route::put('/{id}', 'update')->name('actionUpdateReservation');
+        Route::delete('/delete/{id}', 'delete')->name('reservations.destroy');
+        Route::resource('reservations', ReservationController::class);
     });
 
     // tables

@@ -49,10 +49,13 @@
                 <div class="card-body">
                     @include('layout.feedback')
 
-                    <a href="{{ route('newDiningTable') }}"
-                        class="btn bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-5 py-[11px] mb-5">Create
-                        new
-                        Table</a>
+                    <div class="flex space-x-2">
+                          <a href="{{ route('newDiningTable') }}"
+                              class="btn bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-5 py-[11px] mb-5">Create new
+                              Table</a>
+                          <a href="{{ route('reservations.index') }}"
+                              class="btn bg-primary-600 hover:bg-primary-700 text-white rounded-lg px-5 py-[11px] mb-5">Look Reservations</a>
+                      </div>
                     <table id="selection-table"
                         class="border border-neutral-200 dark:border-neutral-600 rounded-lg border-separate	">
                         <thead>
@@ -97,7 +100,7 @@
                                     </div>
                                 </th>
                                 </th>
-                              @if (Auth::user()->role === 'admin' && 'super_admin')
+                              
                                 <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="flex items-center gap-2">
                                         Created By
@@ -109,7 +112,6 @@
                                     </div>
                                 </th>
                                   
-                              @endif
                                 <th scope="col" class="text-neutral-800 dark:text-white">
                                     <div class="flex items-center gap-2">
                                         Action
@@ -140,10 +142,12 @@
                                                     @if ($table->status == 'available') bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400
                                                     @elseif($table->status == 'occupied')
                                                         bg-warning-100 dark:bg-warning-600/25 text-warning-600 dark:text-warning-400
+                                                    @elseif($table->status == 'reserved')
+                                                        bg-info-100 dark:bg-info-600/25 text-info-600 dark:text-info-400
                                                     @elseif($table->status == 'out_of_service')
                                                         bg-danger-100 dark:bg-danger-600/25 text-danger-600 dark:text-danger-400 @endif
                                                 ">
-                                                {{ $table->status }}
+                                                {{ $table->status == 'out_of_service' ? 'out of service' : $table->status }}
                                             </span>
                                         </div>
 
@@ -161,11 +165,6 @@
 
                                     </td>
                                     <td class="">
-                                        <a href="javascript:void(0)"
-                                            class="w-8 h-8 bg-primary-50 dark:bg-primary-600/10 text-primary-600 dark:text-primary-400 rounded-full inline-flex items-center justify-center">
-                                            <iconify-icon icon="iconamoon:eye-light"></iconify-icon>
-                                        </a>
-
                                         <a href="{{ url("/tables/edit/$table->id") }}"
                                             class="w-8 h-8 bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 rounded-full inline-flex items-center justify-center">
                                             <iconify-icon icon="lucide:edit"></iconify-icon>
@@ -179,7 +178,6 @@
                                 </tr>
 
 
-                                {{-- @include('layout.confirmDeleteModal', ) --}}
                             @endforeach
 
                         </tbody>

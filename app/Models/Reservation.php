@@ -2,31 +2,52 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Reservation extends Model
 {
+    use SoftDeletes, HasTimestamps;
+
     protected $fillable = [
-        'transaction_id',
-        'transaction_detail_id',
-        'member_id',
+        // 'member_id',
+        'guest_count',
+        'reservation_datetime',
         'status',
         'down_payment_amount',
+        'created_by',
     ];
 
 
     public function user()
     {
-        return $this->belongsTo(User::class,' created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function member()
+    // public function member()
+    // {
+    //     return $this->belongsTo(Member::class, 'member_id');
+    // }
+
+    public function reservationContact()
     {
-        return $this->belongsTo(Member::class, 'member_id');
+        return $this->hasOne(ReservationContact::class);
     }
+
 
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);
+    }
+
+    // public function diningTable()
+    // {
+    //     return $this->belongsTo(DiningTable::class, 'dining_table_id');
+    // }
+
+    public function diningTables()
+    {
+        return $this->belongsToMany(DiningTable::class, 'dining_table_reservation');
     }
 }

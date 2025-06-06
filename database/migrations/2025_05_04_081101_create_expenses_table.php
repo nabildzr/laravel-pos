@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->foreignId('approved_by')->nullable()->constrained('users');
             // $table->text('rejection_reason')->nullable(); // nanti ajah (masih sederhana & secepatnya)
-            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('approved_at')->nullable()->default(null);
             $table->foreignId('created_by')->constrained('users');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->softDeletes();

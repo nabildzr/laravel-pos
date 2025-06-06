@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use  HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +20,8 @@ class User extends Authenticatable
     protected $fillable = [
         'full_name',
         'name',
+        'join_date',
+        'profile_image',
         'email',
         'role',
         'join_date',
@@ -91,5 +93,10 @@ class User extends Authenticatable
     protected function expenseCategory()
     {
         return $this->hasMany(ExpenseCategory::class, 'created_by');
+    }
+
+     public function loginHistory()
+    {
+        return $this->hasMany(LoginHistory::class);
     }
 }

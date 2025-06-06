@@ -56,9 +56,9 @@
                                             class="w-[44px] h-[44px] text-purple-600 dark:text-purple-500 bg-purple-600/20 border border-purple-300 dark:border-purple-600/50 shrink-0 flex justify-center items-center rounded-lg h6 mb-4">
                                             <iconify-icon icon="majesticons:shopping-cart" class="icon"></iconify-icon>
                                         </span>
-                                        <span class="mb-1 font-medium text-secondary-light text-base">Total Orders</span>
+                                        <span class="mb-1 font-medium text-secondary-light text-base">Today's Total Orders</span>
                                         <h6 class="font-semibold text-neutral-900 mt-2 mb-px">
-                                            {{ \App\Models\Transaction::count() }}</h6>
+                                            {{ \App\Models\Transaction::whereDate('created_at', now())->count() }}</h6>
                                     </div>
                                 </div>
                                 {{-- <p class="text-sm mb-0 mt-3">Increase by  <span class="bg-success-100 dark:bg-success-600/25 px-1 py-0.5 rounded-sm font-medium text-success-600 dark:text-success-500 text-sm">+1k</span> this week</p> --}}
@@ -70,10 +70,10 @@
                                             class="w-[44px] h-[44px] text-pink-600 dark:text-pink-500 bg-pink-600/20 border border-pink-300 dark:border-pink-600/50 shrink-0 flex justify-center items-center rounded-lg h6 mb-4">
                                             <iconify-icon icon="ri:discount-percent-fill" class="icon"></iconify-icon>
                                         </span>
-                                        <span class="mb-1 font-medium text-secondary-light text-base">Total Sales</span>
+                                        <span class="mb-1 font-medium text-secondary-light text-base">Today's Total Sales</span>
                                         <h6 class="font-semibold text-neutral-900 mt-2 mb-px">
                                             Rp
-                                            {{ number_format(\App\Models\Transaction::sum('total_amount'), 0, '.', '.') }}
+                                            {{ number_format(\App\Models\Transaction::whereDate('created_at', now())->sum('total_amount'), 0, '.', '.') }}
                                         </h6>
                                     </div>
                                 </div>

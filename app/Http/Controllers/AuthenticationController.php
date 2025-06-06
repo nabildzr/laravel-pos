@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LoginHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,13 +23,44 @@ class AuthenticationController extends Controller
             'password' => 'required|string',
         ]);
 
+        $userData = User::where('email', $request->email)->first();
+        $userId = $userData ? $userData->id : null;
+
         if (Auth::attempt($data)) {
-            if (Auth::check()) {
-                User::where('id', Auth::user()->id)->update(['is_active' => true]);
+            if (!Auth::user()->is_active) {
+                if ($userId) {
+                    LoginHistory::create([
+                        'user_id' => $userId,
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                        'status' => 'failed'
+                    ]);
+                }
+
+                Auth::logout();
+                return back()->withErrors([
+                    'error' => 'Akun dinonaktifkan.',
+                ]);
             }
+
+            LoginHistory::create([
+                'user_id' => Auth::id(),
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'status' => 'success'
+            ]);
+
             return redirect()->intended('/');
         }
 
+        if ($userId) {
+            LoginHistory::create([
+                'user_id' => $userId,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'status' => 'failed'
+            ]);
+        }
 
         return back()->withErrors([
             'error' => 'These credentials do not match our records.',
@@ -47,9 +79,6 @@ class AuthenticationController extends Controller
 
     public function logout(Request $request)
     {
-        if (Auth::check()) {
-            User::where('id', Auth::user()->id)->update(['is_active' => false]);
-        }
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

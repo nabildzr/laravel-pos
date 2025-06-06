@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 255);
             $table->integer('price');
             $table->string('image')->nullable();
-            $table->string('sku')->unique();
+            $table->string('sku')->unique()->nullable();
             $table->integer('stock')->default(0);
             $table->boolean('is_discount')->default(false);
             $table->integer('discount')->nullable();

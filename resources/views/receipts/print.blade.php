@@ -6,19 +6,19 @@
     <meta charset="utf-8">
     <style>
         body {
+            display: flex;
             font-family: 'Courier New', monospace;
-            width: 80mm;
+            width: 60mm;
             margin: 0 auto;
             font-size: 12px;
             padding: 0;
-            background: #fff;
+     
         }
 
         .receipt-container {
             padding: 10px 8px;
-            border: 1px dashed #bbb;
-            background: #fff;
-            box-shadow: 0 2px 8px #eee;
+            border: 1px dashed;
+            box-shadow: 0 2px 8px;
         }
 
         .text-center {
@@ -63,7 +63,7 @@
         }
 
         .divider {
-            border-top: 1px dashed #bbb;
+            border-top: 1px dashed ;
             margin: 8px 0;
         }
 
@@ -76,7 +76,6 @@
 
         .footer-note {
             font-size: 11px;
-            color: #555;
         }
 
         @media print {

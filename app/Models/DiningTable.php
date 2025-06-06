@@ -16,15 +16,23 @@ class DiningTable extends Model
         'created_by'
     ];
 
-    public function member() {
+    public function member()
+    {
         return $this->belongsTo(Member::class);
     }
 
-    public function reeservation_contact() {
+    public function reeservation_contact()
+    {
         return $this->belongsTo(ReservationContact::class);
     }
 
-    public function user() {
-        return $this->belongsTo(User::class, 'created_by')
-;    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function reservations()  
+    {
+        return $this->belongsToMany(Reservation::class, 'dining_table_reservation', 'dining_table_id', 'reservation_id');
+    }
 }

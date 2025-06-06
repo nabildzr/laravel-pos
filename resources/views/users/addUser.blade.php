@@ -1,7 +1,8 @@
 @extends('layout.layout')
 @php
-    $title='Add User';
-    $subTitle = 'Add User';
+    $isEdit = isset($user);
+    $title = $isEdit ? 'Edit User' : 'Add User';
+    $subTitle = $isEdit ? 'Edit User' : 'Add User';
     $script = '<script>
                     // ================== Image Upload Js Start ===========================
                     function readURL(input) {
@@ -23,70 +24,106 @@
 @endphp
 
 @section('content')
-
     <div class="card h-full p-0 rounded-xl border-0 overflow-hidden">
         <div class="card-body p-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 justify-center">
                 <div class="col-span-12 lg:col-span-10 xl:col-span-8 2xl:col-span-6 2xl:col-start-4">
                     <div class="card border border-neutral-200 dark:border-neutral-600">
                         <div class="card-body">
-                            <h6 class="text-base text-neutral-600 dark:text-neutral-200 mb-4">Profile Image</h6>
+                            <h6 class="text-base text-neutral-600 dark:text-neutral-200 mb-4">{{ $isEdit ? 'Update User' : 'Create New User' }}</h6>
 
                             <!-- Upload Image Start -->
                             <div class="mb-6 mt-4">
                                 <div class="avatar-upload">
                                     <div class="avatar-edit absolute bottom-0 end-0 me-6 mt-4 z-[1] cursor-pointer ">
-                                        <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" hidden>
+                                        <input type='file' id="imageUpload" name="profile_image" accept=".png, .jpg, .jpeg" hidden>
                                         <label for="imageUpload" class="w-8 h-8 flex justify-center items-center bg-primary-50 dark:bg-primary-600/25 text-primary-600 dark:text-primary-400 border border-primary-600 hover:bg-primary-100 text-lg rounded-full">
                                             <iconify-icon icon="solar:camera-outline" class="icon"></iconify-icon>
                                         </label>
                                     </div>
                                     <div class="avatar-preview">
-                                        <div id="imagePreview"> </div>
+                                        <div id="imagePreview" style="{{ $isEdit && isset($user->profile_image) ? 'background-image: url(' . asset('storage/' . $user->profile_image) . ')' : '' }}"></div>
                                     </div>
                                 </div>
                             </div>
                             <!-- Upload Image End -->
 
-                            <form action="#">
+                            <form action="{{ $isEdit ? route('updateUser', $user->id) : route('storeUser') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @if($isEdit)
+                                    @method('PUT')
+                                @endif
+
                                 <div class="mb-5">
                                     <label for="name" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Full Name <span class="text-danger-600">*</span></label>
-                                    <input type="text" class="form-control rounded-lg" id="name" placeholder="Enter Full Name">
+                                    <input type="text" class="form-control rounded-lg" id="name" name="name" value="{{ $isEdit ? $user->name : old('name') }}" placeholder="Enter Full Name" required>
+                                    @error('name')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
+
                                 <div class="mb-5">
                                     <label for="email" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Email <span class="text-danger-600">*</span></label>
-                                    <input type="email" class="form-control rounded-lg" id="email" placeholder="Enter email address">
+                                    <input type="email" class="form-control rounded-lg" id="email" name="email" value="{{ $isEdit ? $user->email : old('email') }}" placeholder="Enter email address" required>
+                                    @error('email')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
+
                                 <div class="mb-5">
-                                    <label for="number" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Phone</label>
-                                    <input type="email" class="form-control rounded-lg" id="number" placeholder="Enter phone number">
+                                    <label for="phone_number" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Phone</label>
+                                    <input type="text" class="form-control rounded-lg" id="phone_number" name="phone_number" value="{{ $isEdit ? $user->phone_number : old('phone_number') }}" placeholder="Enter phone number">
+                                    @error('phone_number')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
+
                                 <div class="mb-5">
-                                    <label for="depart" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Department <span class="text-danger-600">*</span> </label>
-                                    <select class="form-control rounded-lg form-select" id="depart">
-                                        <option>Enter Event Title </option>
-                                        <option>Enter Event Title One </option>
-                                        <option>Enter Event Title Two</option>
+                                    <label for="role" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Role <span class="text-danger-600">*</span></label>
+                                    <select class="form-control rounded-lg form-select" id="role" name="role" required>
+                                        <option value="">Select Role</option>
+                                        <option value="user" {{ ($isEdit && $user->role === 'user') || old('role') === 'user' ? 'selected' : '' }}>User</option>
+                                        <option value="staff" {{ ($isEdit && $user->role === 'staff') || old('role') === 'staff' ? 'selected' : '' }}>Staff</option>
+                                        <option value="admin" {{ ($isEdit && $user->role === 'admin') || old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                        <option value="super_admin" {{ ($isEdit && $user->role === 'super_admin') || old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                                     </select>
+                                    @error('role')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
+
                                 <div class="mb-5">
-                                    <label for="desig" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Designation <span class="text-danger-600">*</span> </label>
-                                    <select class="form-control rounded-lg form-select" id="desig">
-                                        <option>Enter Designation Title </option>
-                                        <option>Enter Designation Title One </option>
-                                        <option>Enter Designation Title Two</option>
+                                    <label for="is_active" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Status</label>
+                                    <select class="form-control rounded-lg form-select" id="is_active" name="is_active">
+                                        <option value="1" {{ ($isEdit && $user->is_active) || old('is_active') === '1' ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ ($isEdit && !$user->is_active) || old('is_active') === '0' ? 'selected' : '' }}>Inactive</option>
                                     </select>
+                                    @error('is_active')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
+
+                                @if(!$isEdit)
                                 <div class="mb-5">
-                                    <label for="desc" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Description</label>
-                                    <textarea name="#0" class="form-control rounded-lg" id="desc" placeholder="Write description..."></textarea>
+                                    <label for="password" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Password <span class="text-danger-600">*</span></label>
+                                    <input type="password" class="form-control rounded-lg" id="password" name="password" placeholder="Enter password" {{ !$isEdit ? 'required' : '' }}>
+                                    @error('password')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
+
+                                <div class="mb-5">
+                                    <label for="password_confirmation" class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Confirm Password <span class="text-danger-600">*</span></label>
+                                    <input type="password" class="form-control rounded-lg" id="password_confirmation" name="password_confirmation" placeholder="Confirm password" {{ !$isEdit ? 'required' : '' }}>
+                                </div>
+                                @endif
+
                                 <div class="flex items-center justify-center gap-3">
-                                    <button type="button" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-base px-14 py-[11px] rounded-lg">
+                                    <a href="{{ route('usersList') }}" class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-base px-14 py-[11px] rounded-lg">
                                         Cancel
-                                    </button>
+                                    </a>
                                     <button type="submit" class="btn btn-primary border border-primary-600 text-base px-14 py-3 rounded-lg">
-                                        Save
+                                        {{ $isEdit ? 'Update' : 'Save' }}
                                     </button>
                                 </div>
                             </form>
@@ -96,5 +133,4 @@
             </div>
         </div>
     </div>
-
 @endsection

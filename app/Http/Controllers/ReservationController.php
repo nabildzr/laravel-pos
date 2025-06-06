@@ -10,20 +10,16 @@ class ReservationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $reservations = Reservation::all();        
-        return view('reservations.index')->with([
-            'reservations' => $reservations
-        ]);
+        return view('reservations.index');
     }
-
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('reservations.form');
     }
 
     /**
@@ -47,7 +43,12 @@ class ReservationController extends Controller
      */
     public function edit(string $id)
     {
-        //
+
+        $reservation = Reservation::findOrFail($id);
+        return view('reservations.edit',)->with([
+            'reservation' => $reservation
+        ]);
+
     }
 
     /**
@@ -63,6 +64,13 @@ class ReservationController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $reservation = Reservation::findOrFail($id);
+
+        if (in_array($reservation->status, ['cancelled', 'completed'])) {
+            return redirect()->route('reservations.index')->with('error', 'Reservation cannot be deleted.');
+        }
+        $reservation->delete();
+
+        return redirect()->route('reservations.index')->with('success', 'Reservation deleted successfully.');
     }
 }

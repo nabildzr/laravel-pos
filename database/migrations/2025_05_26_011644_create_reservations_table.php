@@ -13,17 +13,18 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id')->constrained('transactions')->cascadeOnDelete();
-            $table->foreignId('transaction_detail_id')->constrained('transaction_details')->cascadeOnDelete();
-            $table->string('member_id')->nullable();
+            // $table->string('member_id')->nullable();
+            $table->dateTime('reservation_datetime');
+            $table->time('completed_reservation_time')->nullable();
             $table->integer('down_payment_amount');
+            $table->integer('guest_count');
             $table->enum('status', [
                 'reserved',
-                'confirmed',
-                'declined',
+                'occupied',
+                'completed',
                 'cancelled',
             ]);
-            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
             $table->softDeletes();
         });

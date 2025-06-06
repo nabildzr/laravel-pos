@@ -35,9 +35,16 @@ class DiningTableController extends Controller
     {
         $fields = $request->validate([
             'name' => 'required|string|max:255',
-            'status' => 'required|string|in:available,occupied,reserved',
-            'capacity' => 'required|integer|min:1',
+            'status' => 'required|string|in:available,occupied,reserved,out_of_service',
+            'capacity' => 'required|integer|min:1|max:50',
         ]);
+
+        if (
+            $fields['status'] === 'out_of_service' &&
+            !in_array(Auth::user()->role, ['super_admin', 'admin'])
+        ) {
+            return back()->with(['error' => 'You do not have permission to set this table as out of service.']);
+        }
 
         $fields['created_by'] = Auth::user()->id;
 
@@ -85,9 +92,16 @@ class DiningTableController extends Controller
 
         $fields = $request->validate([
             'name' => 'required|string|max:255',
-            'status' => 'required|string|in:available,occupied,reserved',
+            'status' => 'required|string|in:available,occupied,reserved,out_of_service',
             'capacity' => 'required|integer|min:1|max:50',
         ]);
+
+        if (
+            $fields['status'] === 'out_of_service' &&
+            !in_array(Auth::user()->role, ['super_admin', 'admin'])
+        ) {
+            return back()->with(['error' => 'You do not have permission to set this table as out of service.']);
+        }
 
         $status = $table->update($fields);
 
@@ -101,7 +115,7 @@ class DiningTableController extends Controller
             return back()->with(
                 ['error' => 'Failed to update Dining Table']
             );
-        } 
+        }
     }
 
     /**
@@ -110,7 +124,7 @@ class DiningTableController extends Controller
     public function destroy(string $id)
     {
         $result = DiningTable::findOrFail($id);
-        
+
         $result->delete();
 
         return redirect('tables')->with([
