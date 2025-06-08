@@ -90,7 +90,7 @@
             </li>
 
 
-            @if (Auth::user()->role == ('admin' && 'super_admin'))
+            @if (Auth::user()->role === 'admin' || Auth::user()->role === 'super_admin')
                 <li>
                     <a href="{{ url('/payment-method') }}">
                         <iconify-icon icon="fluent:payment-48-filled" class="menu-icon"></iconify-icon>
