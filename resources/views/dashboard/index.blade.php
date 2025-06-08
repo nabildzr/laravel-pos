@@ -135,7 +135,6 @@
                                     <th scope="col">Users</th>
                                     <th scope="col">Invoice</th>
                                     <th scope="col">Items</th>
-                                    <th scope="col">Qty</th>
                                     <th scope="col">Amount</th>
                                     <th scope="col" class="text-center">Status</th>
                                 </tr>
@@ -159,9 +158,7 @@
                                             @endphp
                                             {{ $items->count() > 0 ? $items->pluck('product.name')->implode(', ') : '-' }}
                                         </td>
-                                        <td>
-                                            {{ $items->sum('qty') }}
-                                        </td>
+                                
                                         <td>
                                             Rp {{ number_format($order->total_amount, 0, '.', '.') }}
                                         </td>
