@@ -197,13 +197,14 @@
                                           <a href="{{ url("/reservations/edit/$reservation->id") }}"
                                               class="w-8 h-8 bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 rounded-full inline-flex items-center justify-center">
                                               <iconify-icon icon="lucide:edit"></iconify-icon>
-                                          </a>
-                                          <a data-modal-target="delete-modal-{{ $reservation->id }}"
-                                              data-modal-toggle="delete-modal-{{ $reservation->id }}"
-                                              class="w-8 h-8 bg-danger-100 dark:bg-danger-600/25 text-danger-600 dark:text-danger-400 rounded-full inline-flex items-center justify-center">
-                                              <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
-                                          </a>
-                                      </td>
+                                        </a>
+                                        @if(auth()->user()->role == ('admin') || auth()->user()->role == ('super_admin'))
+                                            <a data-modal-target="delete-modal-{{ $reservation->id }}"
+                                                data-modal-toggle="delete-modal-{{ $reservation->id }}"
+                                                class="w-8 h-8 bg-danger-100 dark:bg-danger-600/25 text-danger-600 dark:text-danger-400 rounded-full inline-flex items-center justify-center">
+                                                <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
+                                            </a>
+                                        @endif  </td>
                                   </tr>
                               @endforeach
 

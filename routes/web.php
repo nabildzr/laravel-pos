@@ -27,17 +27,17 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TransactionController;
 use App\Livewire\TransactionPayment;
 
-// Authentication
+// authentication (guest)
 Route::middleware(['guest'],)->controller(AuthenticationController::class)->group(function () {
-    Route::get('/forgot-password',  'forgotPassword')->name('forgotPassword');
     Route::get('/sign-in', 'signin')->name('login');
     Route::post('/sign-in', 'actionSignIn')->name('actionSignIn');
 });
 
-Route::get('/', [DashboardController::class, 'index'])->middleware(['auth']);
-Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout')->middleware(['auth']);
 
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [DashboardController::class, 'index']);
+    Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+});
 
 
 
@@ -57,7 +57,7 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
         Route::get('/receipt/{transaction}', [ReceiptController::class, 'print'])->name('receipt.print');
     });
 
-    // Reports
+    // reports
     Route::middleware(['auth', 'multi_user'])->prefix('reports')->controller(ReportController::class)->group(function () {
         Route::get('/expense', 'expenseView')->name('reports.expenses');
         Route::get('/expense/export', 'exportExpense')->name('reports.expenses.export');
@@ -84,7 +84,7 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
     });
 
 
-    // Users
+    // users
     Route::middleware(['auth'])->prefix('users')->group(function () {
         Route::controller(UsersController::class)->group(function () {
             Route::get('/add-user', 'addUser')->name('addUser')->middleware('multi_user');
@@ -148,7 +148,7 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
         Route::post('/create', 'store')->name('actionNewMember');
         Route::get('/edit/{id}', 'edit')->name('editMember');
         Route::put('/edit/{id}', 'update')->name('actionEditMember');
-        // Hanya user yang bukan operator yang bisa mengakses delete
+        // hanya user yang bukan operator yang bisa mengakses delete
         Route::middleware(['multi_user'])->group(function () {
             Route::delete('/delete/{id}', 'destroy')->name('actionDeleteMember');
         });
@@ -219,110 +219,19 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
         Route::put('/edit/{id}', 'update')->name('actionUpdateDiningTable');
         Route::delete('/delete/{id}', 'destroy')->name('actionDeleteDiningTable');
     });
-});
 
-
-
-
-
-
-//---- template ----//----
-
-
-Route::middleware(['auth'])->controller(HomeController::class)->group(function () {
-    Route::get('calendar-Main', 'calendarMain')->name('calendarMain');
-    Route::get('gallery', 'gallery')->name('gallery');
-    Route::get('image-upload', 'imageUpload')->name('imageUpload');
-    Route::get('page-error', 'pageError')->name('pageError');
-    Route::get('pricing', 'pricing')->name('pricing');
-    Route::get('starred', 'starred')->name('starred');
-    Route::get('terms-condition', 'termsCondition')->name('termsCondition');
-    Route::get('veiw-details', 'veiwDetails')->name('veiwDetails');
-    Route::get('widgets', 'widgets')->name('widgets');
-});
-
-
-
-
-// chart
-Route::prefix('chart')->group(function () {
-    Route::controller(ChartController::class)->group(function () {
-        Route::get('/column-chart', 'columnChart')->name('columnChart');
-        Route::get('/line-chart', 'lineChart')->name('lineChart');
-        Route::get('/pie-chart', 'pieChart')->name('pieChart');
+    // settings
+    Route::middleware(['auth', 'multi_user'])->prefix('settings')->group(function () {
+        Route::controller(BusinessSettingController::class)->group(function () {
+            Route::get('/business', 'index')->name('business.settings');
+            Route::post('/business', 'update')->name('business.update');
+        });
     });
-});
 
-// Componentpage
-Route::prefix('componentspage')->group(function () {
-    Route::controller(ComponentspageController::class)->group(function () {
-        Route::get('/alert', 'alert')->name('alert');
-        Route::get('/avatar', 'avatar')->name('avatar');
-        Route::get('/badges', 'badges')->name('badges');
-        Route::get('/button', 'button')->name('button');
-        Route::get('/card', 'card')->name('card');
-        Route::get('/carousel', 'carousel')->name('carousel');
-        Route::get('/colors', 'colors')->name('colors');
-        Route::get('/dropdown', 'dropdown')->name('dropdown');
-        Route::get('/imageupload', 'imageUpload')->name('imageUpload');
-        Route::get('/list', 'list')->name('list');
-        Route::get('/pagination', 'pagination')->name('pagination');
-        Route::get('/progress', 'progress')->name('progress');
-        Route::get('/radio', 'radio')->name('radio');
-        Route::get('/star-rating', 'starRating')->name('starRating');
-        Route::get('/switch', 'switch')->name('switch');
-        Route::get('/tabs', 'tabs')->name('tabs');
-        Route::get('/tags', 'tags')->name('tags');
-        Route::get('/tooltip', 'tooltip')->name('tooltip');
-        Route::get('/typography', 'typography')->name('typography');
-        Route::get('/videos', 'videos')->name('videos');
-    });
-});
-
-// Dashboard
-Route::prefix('cryptocurrency')->group(function () {
-    Route::controller(CryptocurrencyController::class)->group(function () {
-        Route::get('/wallet', 'wallet')->name('wallet');
-    });
-});
-
-// Dashboard
-// Route::controller(DashboardController::class)->group(function () {
-//     Route::get('/', 'index')->name('index');
-// });
-
-// Forms
-Route::prefix('forms')->group(function () {
-    Route::controller(FormsController::class)->group(function () {
-        Route::get('/form', 'form')->name('form');
-        Route::get('/form-layout', 'formLayout')->name('formLayout');
-        Route::get('/form-validation', 'formValidation')->name('formValidation');
-        Route::get('/wizard', 'wizard')->name('wizard');
-    });
-});
-
-// Settings
-Route::middleware(['auth', 'multi_user'])->prefix('settings')->group(function () {
-    Route::controller(BusinessSettingController::class)->group(function () {
-        Route::get('/business', 'index')->name('business.settings');
-        Route::post('/business', 'update')->name('business.update');
-    });
-});
-
-// Table
-Route::prefix('table')->group(function () {
-    Route::controller(TableController::class)->group(function () {
-        Route::get('/table-basic', 'tableBasic')->name('tableBasic');
-        Route::get('/table-data', 'tableData')->name('tableData');
-    });
-});
-
-// Users
-Route::prefix('users')->group(function () {
-    Route::controller(UsersController::class)->group(function () {
-        Route::get('/add-user', 'addUser')->name('addUser');
-        Route::get('/users-grid', 'usersGrid')->name('usersGrid');
-        Route::get('/users-list', 'usersList')->name('usersList');
-        Route::get('/view-profile', 'viewProfile')->name('viewProfile');
+    // users
+    Route::middleware(['auth', 'multi_user'])->prefix('users')->group(function () {
+        Route::controller(UsersController::class)->group(function () {
+            Route::get('/add-user', 'addUser')->name('addUser');
+        });
     });
 });

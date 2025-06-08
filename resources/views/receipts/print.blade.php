@@ -210,7 +210,7 @@
                     <div class="receipt-item">
                         <table class="receipt-table">
                             <tr>
-                                <td class="left" style="width: 50%;">{{ $detail->product->name }}</td>
+                                <td class="left" style="width: 50%;">{{ $detail->product->name ?? 'Unknown' }}</td>
                                 <td class="right" colspan="3" style="width: 50%;">
                                     {{ $detail->quantity }} x
                                     @Rp{{ number_format($detail->price) }}

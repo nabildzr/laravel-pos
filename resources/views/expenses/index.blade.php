@@ -235,7 +235,7 @@
                                     </td>
                                     <td>
                                         <div class="flex space-x-2">
-                                            @if ($expense->status == 'pending' && auth()->user()->role == 'admin')
+                                            @if ($expense->status == 'pending' && (auth()->user()->role == 'admin' || auth()->user()->role == 'super_admin'))
                                                 <form action="{{ route('expense.approve', $expense->id) }}" method="POST"
                                                     class="inline">
                                                     @csrf

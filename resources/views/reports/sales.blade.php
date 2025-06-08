@@ -245,7 +245,7 @@
                                     </td>
                                     <td>
                                         @foreach ($row->transactionDetails as $detail)
-                                            {{ $detail->product->is_discount ? $detail->product->discount : '-' }}
+                                            {{ $detail->product && $detail->product->is_discount ? $detail->product->discount : '-' }}
                                             @if (!$loop->last)
                                                 ,
                                             @endif

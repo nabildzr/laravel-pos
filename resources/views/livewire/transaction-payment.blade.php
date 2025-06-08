@@ -52,11 +52,12 @@
                             </span>
                         </div>
                         @if (
+                            $detail->product &&
                             $detail->product->is_discount &&
-                                strval($detail->product->price) &&
-                                ($detail->product->discount ?? 0) &&
-                                $detail->product->discount ??
-                                0 > 0)
+                            strval($detail->product->price) &&
+                            ($detail->product->discount ?? 0) &&
+                            $detail->product->discount ??
+                            0 > 0)
                             <div class="flex justify-end gap-4 items-center text-gray-400 dark:text-neutral-600">
                                 <span class="" style="font-size: 13px;">
                                     Discount
