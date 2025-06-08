@@ -43,14 +43,21 @@
         <div class="col-span-12 lg:col-span-4">
             <div
                 class="user-grid-card relative border border-neutral-200 dark:border-neutral-600 rounded-2xl overflow-hidden bg-white dark:bg-neutral-700 h-full">
-                <img src="{{ asset('assets/images/user-grid/user-grid-bg1.png') }}" alt=""
-                    class="w-full object-fit-cover">
+                <img src="{{ asset('assets/images/banner.png') }}" alt=""
+                    style="width: 100%; height: 10px object-fit: cover;">
                 <div class="pb-6 ms-6 mb-6 me-6 -mt-[100px]">
                     <div class="text-center border-b border-neutral-200 dark:border-neutral-600">
-                        <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt=""
-                            class="border br-white border-width-2-px w-200-px h-[200px] rounded-full object-fit-cover mx-auto">
+                        @if (isset($user) && !empty($user->profile_image))
+                            <img src="{{ asset('storage/' . $user->profile_image) }}"
+                                alt="Profile Image"class="border br-white border-width-2-px  rounded-full object-fit-cover mx-auto"
+                                style="width: 200px; height: 200px; object-fit: cover;">
+                        @else
+                            <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt="Profile Image"
+                                class="border br-white border-width-2-px w-200-px h-[200px] rounded-full object-fit-cover mx-auto">
+                        @endif
+
                         <h6 class="mb-0 mt-4">{{ $user->name ?? 'Not Found' }}</h6>
-                        <span class="text-secondary-light mb-4">{{ $user->email ?? 'Not Found'}}</span>
+                        <span class="text-secondary-light mb-4">{{ $user->email ?? 'Not Found' }}</span>
                     </div>
                     <div class="mt-6">
                         <h6 class="text-xl mb-4">Personal Info</h6>
@@ -64,13 +71,21 @@
                             <li class="flex items-center gap-1 mb-3">
                                 <span class="w-[30%] text-base font-semibold text-neutral-600 dark:text-neutral-200">
                                     Email</span>
-                                <span class="w-[70%] text-secondary-light font-medium">: {{ $user->email ?? 'Not Found' }}</span>
+                                <span class="w-[70%] text-secondary-light font-medium">:
+                                    {{ $user->email ?? 'Not Found' }}</span>
                             </li>
                             <li class="flex items-center gap-1 mb-3">
                                 <span class="w-[30%] text-base font-semibold text-neutral-600 dark:text-neutral-200"> Phone
                                     Number</span>
                                 <span class="w-[70%] text-secondary-light font-medium">:
                                     {{ $user->phone_number ?? 'Not Found' }}</span>
+                            </li>
+                            <li class="flex items-center gap-1 mb-3">
+                                <span
+                                    class="w-[30%] text-base font-semibold text-neutral-600 dark:text-neutral-200">Role</span>
+                                <span class="w-[70%] text-secondary-light font-medium">:
+                                    {{ isset($user->role) ? Str::of($user->role)->replace('_', ' ')->title() : 'Not Found' }}
+                                </span>
                             </li>
                         </ul>
                     </div>
@@ -111,9 +126,9 @@
 
                     <div id="default-tab-content">
                         <div class="hidden" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
-                            <h6 class="text-base text-neutral-600 dark:text-neutral-200 mb-4">Profile Image</h6>
+                            {{-- <h6 class="text-base text-neutral-600 dark:text-neutral-200 mb-4">Profile Image</h6> --}}
                             <!-- Upload Image Start -->
-                            <div class="mb-6 mt-4">
+                            {{-- <div class="mb-6 mt-4">
                                 <div class="avatar-upload">
                                     <div class="avatar-edit absolute bottom-0 end-0 me-6 mt-4 z-[1] cursor-pointer">
                                         <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" hidden>
@@ -127,17 +142,22 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <!-- Upload Image End -->
+                            @include('layout.feedback')
+
+
                             <form action="#">
                                 <div class="grid grid-cols-1 sm:grid-cols-12 gap-x-6">
+
                                     <div class="col-span-12 sm:col-span-6">
                                         <div class="mb-5">
                                             <label for="full_name"
                                                 class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Full
                                                 Name <span class="text-danger-600">*</span></label>
                                             <input type="text" class="form-control rounded-lg" id="full_name"
-                                                placeholder="Enter Full Name" name="full_name" value="{{ @$user->full_name ?? '' }}">
+                                                placeholder="Enter Full Name" name="full_name"
+                                                value="{{ @$user->full_name ?? '' }}">
                                         </div>
                                     </div>
                                     <div class="col-span-12 sm:col-span-6">
@@ -155,7 +175,8 @@
                                                 class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Email
                                                 <span class="text-danger-600">*</span></label>
                                             <input type="email" class="form-control rounded-lg" id="email"
-                                                placeholder="Enter email address" name="email" value="{{ @$user->email ?? '' }}">
+                                                placeholder="Enter email address" name="email"
+                                                value="{{ @$user->email ?? '' }}">
                                         </div>
                                     </div>
                                     <div class="col-span-12 sm:col-span-6">
@@ -163,84 +184,75 @@
                                             <label for="number"
                                                 class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Phone</label>
                                             <input type="email" class="form-control rounded-lg" id="number"
-                                                placeholder="Enter phone number" name="phone_number" value="{{ @$user->phone_number ?? '' }}">
+                                                placeholder="Enter phone number" name="phone_number"
+                                                value="{{ @$user->phone_number ?? '' }}">
                                         </div>
                                     </div>
                                 </div>
-                           
+
                             </form>
                         </div>
                         <div class="hidden" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
-                            <div class="mb-5">
-                                <label for="your-password"
-                                    class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">New
-                                    Password <span class="text-danger-600">*</span></label>
-                                <div class="relative">
-                                    <input type="password" class="form-control rounded-lg" id="your-password"
-                                        placeholder="Enter New Password*">
-                                    <span
-                                        class="toggle-password ri-eye-line cursor-pointer absolute end-0 top-1/2 -translate-y-1/2 me-4 text-secondary-light"
-                                        data-toggle="#your-password"></span>
+                            <form action="{{ route('changePassword') }}" method="POST">
+                                @csrf
+                                <div class="mb-5">
+                                    <label for="current_password"
+                                        class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Current
+                                        Password <span class="text-danger-600">*</span></label>
+                                    <div class="relative">
+                                        <input type="password" class="form-control rounded-lg" id="current_password"
+                                            name="current_password" placeholder="Enter Current Password*" required>
+                                        <span
+                                            class="toggle-password ri-eye-line cursor-pointer absolute end-0 top-1/2 -translate-y-1/2 me-4 text-secondary-light"
+                                            data-toggle="#current_password"></span>
+                                    </div>
+                                    @error('current_password')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
-                            </div>
-                            <div class="mb-5">
-                                <label for="confirm-password"
-                                    class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Confirmed
-                                    Password <span class="text-danger-600">*</span></label>
-                                <div class="relative">
-                                    <input type="password" class="form-control rounded-lg" id="confirm-password"
-                                        placeholder="Confirm Password*">
-                                    <span
-                                        class="toggle-password ri-eye-line cursor-pointer absolute end-0 top-1/2 -translate-y-1/2 me-4 text-secondary-light"
-                                        data-toggle="#confirm-password"></span>
+                                <div class="mb-5">
+                                    <label for="password"
+                                        class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">New
+                                        Password <span class="text-danger-600">*</span></label>
+                                    <div class="relative">
+                                        <input type="password" class="form-control rounded-lg" id="password"
+                                            name="password" placeholder="Enter New Password*" required>
+                                        <span
+                                            class="toggle-password ri-eye-line cursor-pointer absolute end-0 top-1/2 -translate-y-1/2 me-4 text-secondary-light"
+                                            data-toggle="#password"></span>
+                                    </div>
+                                    @error('password')
+                                        <span class="text-danger-600 text-sm">{{ $message }}</span>
+                                    @enderror
                                 </div>
-                            </div>
+                                <div class="mb-5">
+                                    <label for="password_confirmation"
+                                        class="inline-block font-semibold text-neutral-600 dark:text-neutral-200 text-sm mb-2">Confirm
+                                        Password <span class="text-danger-600">*</span></label>
+                                    <div class="relative">
+                                        <input type="password" class="form-control rounded-lg" id="password_confirmation"
+                                            name="password_confirmation" placeholder="Confirm Password*" required>
+                                        <span
+                                            class="toggle-password ri-eye-line cursor-pointer absolute end-0 top-1/2 -translate-y-1/2 me-4 text-secondary-light"
+                                            data-toggle="#password_confirmation"></span>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end">
+                                    <button type="submit" class="btn btn-primary px-6 py-2 rounded-md font-semibold">
+                                        Change Password
+                                    </button>
+                                </div>
+                            </form>
+
+                            @if (session('success'))
+                                <div class="mt-4 p-4 bg-success-100 text-success-600 rounded-md">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
                         </div>
-                        <div class="hidden" id="notification-password" role="tabpanel"
-                            aria-labelledby="notification-password-tab">
-                            <div class="form-switch switch-primary py-3 px-4 border rounded-lg relative mb-4">
-                                <label for="companzNew" class="absolute w-full h-full start-0 top-0"></label>
-                                <div class="flex items-center gap-3 justify-between">
-                                    <span class="form-check-label line-height-1 font-medium text-secondary-light">Company
-                                        News</span>
-                                    <input class="form-check-input" type="checkbox" role="switch" id="companzNew">
-                                </div>
-                            </div>
-                            <div class="form-switch switch-primary py-3 px-4 border rounded-lg relative mb-4">
-                                <label for="pushNotifcation" class="absolute w-full h-full start-0 top-0"></label>
-                                <div class="flex items-center gap-3 justify-between">
-                                    <span class="form-check-label line-height-1 font-medium text-secondary-light">Push
-                                        Notification</span>
-                                    <input class="form-check-input" type="checkbox" role="switch" id="pushNotifcation"
-                                        checked>
-                                </div>
-                            </div>
-                            <div class="form-switch switch-primary py-3 px-4 border rounded-lg relative mb-4">
-                                <label for="weeklyLetters" class="absolute w-full h-full start-0 top-0"></label>
-                                <div class="flex items-center gap-3 justify-between">
-                                    <span class="form-check-label line-height-1 font-medium text-secondary-light">Weekly
-                                        News Letters</span>
-                                    <input class="form-check-input" type="checkbox" role="switch" id="weeklyLetters"
-                                        checked>
-                                </div>
-                            </div>
-                            <div class="form-switch switch-primary py-3 px-4 border rounded-lg relative mb-4">
-                                <label for="meetUp" class="absolute w-full h-full start-0 top-0"></label>
-                                <div class="flex items-center gap-3 justify-between">
-                                    <span class="form-check-label line-height-1 font-medium text-secondary-light">Meetups
-                                        Near you</span>
-                                    <input class="form-check-input" type="checkbox" role="switch" id="meetUp">
-                                </div>
-                            </div>
-                            <div class="form-switch switch-primary py-3 px-4 border rounded-lg relative mb-4">
-                                <label for="orderNotification" class="absolute w-full h-full start-0 top-0"></label>
-                                <div class="flex items-center gap-3 justify-between">
-                                    <span class="form-check-label line-height-1 font-medium text-secondary-light">Orders
-                                        Notifications</span>
-                                    <input class="form-check-input" type="checkbox" role="switch"
-                                        id="orderNotification" checked>
-                                </div>
-                            </div>
+                        <div class="hidden" id="notification-password" role="tabpanel">
+
                         </div>
                     </div>
                 </div>

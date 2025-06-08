@@ -32,6 +32,11 @@ class DatabaseSeeder extends Seeder
             MemberSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
+            ExpenseCategorySeeder::class,
+            // ExpenseSeeder::class,
+            DiningTableSeeder::class,
+            ReservationSeeder::class,
+            TransactionSeeder::class,
         ]);
     }
 }

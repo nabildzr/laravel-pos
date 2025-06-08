@@ -18,17 +18,12 @@ class TableReservation extends Model
         'reservation_datetime' => 'datetime',
     ];
     
-    /**
-     * Get the reservation that owns this table reservation.
-     */
     public function reservation()
     {
         return $this->belongsTo(Reservation::class);
     }
 
-    /**
-     * Get the dining table for this reservation.
-     */
+
     public function diningTable()
     {
         return $this->belongsTo(DiningTable::class);

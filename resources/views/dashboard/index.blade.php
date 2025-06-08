@@ -8,13 +8,42 @@
 
 
 @section('content')
-   
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <div class="md:col-span-12 2xl:col-span-9">
+        <div class="md:col-span-12 2xl:col-span-12">
             <div class="card rounded-lg border-0">
                 <div class="grid grid-cols-1 2xl:grid-cols-12">
                     <div class="xl:col-span-12 2xl:col-span-6">
+                        <div class="card-body p-6">
+                            <div class="flex items-center flex-wrap gap-2 justify-between">
+                                <h6 class="mb-2 font-bold text-lg">Revenue Report</h6>
+
+                            </div>
+                            <ul class="flex flex-wrap items-center mt-4 gap-3">
+                                <li class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-sm bg-primary-600"></span>
+                                    <span class="text-secondary-light text-sm font-semibold">
+                                        Earning:
+                                        <span class="text-neutral-600 dark:text-neutral-200 font-bold">
+                                            Rp {{ number_format($revenueData['totalRevenue'], 0, '.', '.') }}
+                                        </span>
+                                    </span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-sm bg-warning-600"></span>
+                                    <span class="text-secondary-light text-sm font-semibold">
+                                        Expense:
+                                        <span class="text-neutral-600 dark:text-neutral-200 font-bold">
+                                            Rp {{ number_format($revenueData['totalExpenses'], 0, '.', '.') }}
+                                        </span>
+                                    </span>
+                                </li>
+                            </ul>
+                            <div class="mt-[60px]">
+                                <div id="paymentStatusChart" class="margin-16-minus"></div>
+                            </div>
+                        </div>
                     </div>
+                    {{-- grid --}}
                     <div class="xl:col-span-12 2xl:col-span-6 2xl:border-l border-neutral-200 dark:border-neutral-600">
                         <div class="grid grid-cols-1 sm:grid-cols-2 border-s-neutral-300">
                             <div
@@ -31,7 +60,7 @@
                                         </h6>
                                     </div>
                                 </div>
-                                {{-- <p class="text-sm mb-0 mt-3">Increase by  <span class="bg-success-100 dark:bg-success-600/25 px-1 py-0.5 rounded-sm font-medium text-success-600 dark:text-success-500 text-sm">+200</span> this week</p> --}}
+
                             </div>
                             <div
                                 class="card-body p-6 h-full flex flex-col border-b border-neutral-200 dark:border-neutral-600">
@@ -46,8 +75,9 @@
                                             {{ \App\Models\Member::count() }}</h6>
                                     </div>
                                 </div>
-                                {{-- <p class="text-sm mb-0 mt-3">Increase by  <span class="bg-danger-100 dark:bg-danger-600/25 px-1 py-0.5 rounded-sm font-medium text-danger-600 dark:text-danger-500 text-sm">-5k</span> this week</p> --}}
                             </div>
+
+
                             <div
                                 class="card-body p-6 h-full flex flex-col sm:border-r border-neutral-200 dark:border-neutral-600">
                                 <div class="flex flex-wrap items-center justify-between gap-1 mb-0.5">
@@ -56,7 +86,8 @@
                                             class="w-[44px] h-[44px] text-purple-600 dark:text-purple-500 bg-purple-600/20 border border-purple-300 dark:border-purple-600/50 shrink-0 flex justify-center items-center rounded-lg h6 mb-4">
                                             <iconify-icon icon="majesticons:shopping-cart" class="icon"></iconify-icon>
                                         </span>
-                                        <span class="mb-1 font-medium text-secondary-light text-base">Today's Total Orders</span>
+                                        <span class="mb-1 font-medium text-secondary-light text-base">Today's Total
+                                            Orders</span>
                                         <h6 class="font-semibold text-neutral-900 mt-2 mb-px">
                                             {{ \App\Models\Transaction::whereDate('created_at', now())->count() }}</h6>
                                     </div>
@@ -70,65 +101,22 @@
                                             class="w-[44px] h-[44px] text-pink-600 dark:text-pink-500 bg-pink-600/20 border border-pink-300 dark:border-pink-600/50 shrink-0 flex justify-center items-center rounded-lg h6 mb-4">
                                             <iconify-icon icon="ri:discount-percent-fill" class="icon"></iconify-icon>
                                         </span>
-                                        <span class="mb-1 font-medium text-secondary-light text-base">Today's Total Sales</span>
+                                        <span class="mb-1 font-medium text-secondary-light text-base">Today's Total
+                                            Sales</span>
                                         <h6 class="font-semibold text-neutral-900 mt-2 mb-px">
                                             Rp
                                             {{ number_format(\App\Models\Transaction::whereDate('created_at', now())->sum('total_amount'), 0, '.', '.') }}
                                         </h6>
                                     </div>
                                 </div>
-                                {{-- <p class="text-sm mb-0 mt-3">Increase by  <span class="bg-success-100 dark:bg-success-600/25 px-1 py-0.5 rounded-sm font-medium text-success-600 dark:text-success-500 text-sm">+$10k</span> this week</p> --}}
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="md:col-span-12 lg:col-span-6 2xl:col-span-3">
-            <div class="card h-full rounded-lg border-0">
-                <div class="card-body p-6">
-                    <div class="flex items-center flex-wrap gap-2 justify-between">
-                        <h6 class="mb-2 font-bold text-lg">Customers Statistics</h6>
-                        <div class="">
-                            <select
-                                class="form-select form-select-sm w-auto bg-white dark:bg-neutral-700 border text-secondary-light">
-                                <option>Yearly</option>
-                                <option>Monthly</option>
-                                <option>Weekly</option>
-                                <option>Today</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="relative">
-                        <span
-                            class="w-[80px] h-[80px] bg-white dark:bg-neutral-700 shadow-lg text-neutral-600 dark:text-neutral-200 font-semibold text-xl flex justify-center items-center rounded-full absolute end-0 top-0 z-1">+30%</span>
-                        <div id="statisticsDonutChart" class="mt-9 grow apexcharts-tooltip-z-none title-style circle-none">
-                        </div>
-                        <span
-                            class="w-[80px] h-[80px] bg-white dark:bg-neutral-700 shadow-lg text-neutral-600 dark:text-neutral-200 font-semibold text-xl flex justify-center items-center rounded-full absolute start-0 bottom-0 z-1">+25%</span>
-                    </div>
-
-                    <ul class="flex flex-wrap items-center justify-between mt-4 gap-3">
-                        <li class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-sm bg-primary-600"></span>
-                            <span class="text-secondary-light text-sm font-normal">
-                                Male:
-                                <span class="text-neutral-600 dark:text-neutral-200 font-bold">20,000</span>
-                            </span>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-sm bg-warning-600"></span>
-                            <span class="text-secondary-light text-sm font-normal">
-                                Female:
-                                <span class="text-neutral-600 dark:text-neutral-200 font-bold">25,000</span>
-                            </span>
-                        </li>
-                    </ul>
-
-                </div>
-            </div>
-        </div>
         <div class="md:col-span-12 lg:col-span-6 2xl:col-span-9">
             <div class="card h-full border-0">
                 <div class="card-body p-6">
@@ -160,7 +148,7 @@
                                                 <img src="{{ asset('assets/images/users/user1.png') }}" alt=""
                                                     class="shrink-0 me-3 rounded-lg">
                                                 <span class="text-lg text-secondary-light font-semibold grow">
-                                                    {{ optional($order->member)->name ?? 'Unknown' }}
+                                                    {{ optional($order->member)->name ?? 'Customer' }}
                                                 </span>
                                             </div>
                                         </td>
@@ -194,6 +182,9 @@
                 </div>
             </div>
         </div>
+
+
+        {{-- top payment method --}}
         <div class="md:col-span-12 lg:col-span-6 2xl:col-span-3">
             <div class="card h-full border-0">
 
@@ -204,226 +195,63 @@
                             <select
                                 class="form-select form-select-sm w-auto bg-white dark:bg-neutral-700 border text-secondary-light">
                                 <option>This Month</option>
-                                <option>Last Month</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mt-8">
-                        <div class="flex items-center justify-between gap-3 mb-5">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/payment/payment1.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Paytm</h6>
-                                    <span class="text-sm text-secondary-light font-normal">Starbucks</span>
+                        @forelse($transactionsByPaymentMethod as $data)
+                            <div class="flex items-center justify-between gap-3 mb-5">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-10 h-10 rounded-lg shrink-0 bg-primary-100 text-primary-600 flex items-center justify-center">
+                                        <iconify-icon icon="heroicons:credit-card" class="text-xl"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                        <h6 class="text-base mb-0 font-normal">{{ $data['payment_method']->name }}</h6>
+                                        <span
+                                            class="text-sm text-secondary-light font-normal">{{ $data['reference'] }}</span>
+                                    </div>
                                 </div>
+                                <span
+                                    class="text-{{ $data['recent_transaction']->paid_amount >= 0 ? 'success' : 'danger' }}-600 text-base font-medium">
+                                    Rp {{ number_format($data['recent_transaction']->total_amount, 0, '.', '.') }}
+                                </span>
                             </div>
-                            <span class="text-danger text-base font-medium">-$20</span>
-                        </div>
+                        @empty
+                            <div class="text-center py-4 text-neutral-500">No transaction data available</div>
+                        @endforelse
 
-                        <div class="flex items-center justify-between gap-3 mb-5">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/payment/payment2.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">PayPal</h6>
-                                    <span class="text-sm text-secondary-light font-normal">Client Payment</span>
+                        @if (count($transactionsByPaymentMethod) == 0)
+                            <!-- Fallback placeholder content -->
+                            <div class="flex items-center justify-between gap-3 mb-5">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-10 h-10 rounded-lg shrink-0 bg-neutral-100 text-neutral-600 flex items-center justify-center">
+                                        <iconify-icon icon="heroicons:credit-card" class="text-xl"></iconify-icon>
+                                    </div>
+                                    <div class="grow">
+                                        <h6 class="text-base mb-0 font-normal">Cash</h6>
+                                        <span class="text-sm text-secondary-light font-normal">No transactions yet</span>
+                                    </div>
                                 </div>
+                                <span class="text-neutral-600 text-base font-medium">Rp 0</span>
                             </div>
-                            <span class="text-success-600 text-base font-medium">+$800</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-5">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/payment/payment3.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Stripe</h6>
-                                    <span class="text-sm text-secondary-light font-normal">Ordered iPhone 14</span>
-                                </div>
-                            </div>
-                            <span class="text-danger-600 text-base font-medium">-$300</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-5">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/payment/payment4.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Razorpay</h6>
-                                    <span class="text-sm text-secondary-light font-normal">Refund</span>
-                                </div>
-                            </div>
-                            <span class="text-success-600 text-base font-medium">+$400</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-5">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/payment/payment1.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Paytm</h6>
-                                    <span class="text-sm text-secondary-light font-normal">Starbucks</span>
-                                </div>
-                            </div>
-                            <span class="text-danger-600 text-base font-medium">-$1400</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/payment/payment3.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Stripe</h6>
-                                    <span class="text-sm text-secondary-light font-normal">Ordered iPhone 14</span>
-                                </div>
-                            </div>
-                            <span class="text-success-600 text-base font-medium">+$800</span>
-                        </div>
+                        @endif
 
                     </div>
                 </div>
             </div>
         </div>
-        <div class="md:col-span-12 lg:col-span-6 2xl:col-span-4">
-            <div class="card h-full border-0 rounded-lg">
-                <div class="card-body p-6">
-                    <h6 class="mb-3 font-bold text-lg">Recent Orders</h6>
-                    <div class="flex items-center gap-2">
-                        <h6 class="font-semibold mb-0">$27,200</h6>
-                        <p class="text-sm mb-0">
-                            <span
-                                class="bg-success-600/20 border border-success-600/25 px-2 py-1 rounded-full font-semibold text-success-600 dark:text-success-400 text-sm inline-flex items-center gap-1">
-                                10%
-                                <iconify-icon icon="iconamoon:arrow-up-2-fill" class="icon"></iconify-icon>
-                            </span>
-                            Increases
-                        </p>
-                    </div>
-                    <div id="recent-orders" class="mt-7"></div>
-                </div>
-            </div>
-        </div>
-        <div class="md:col-span-12 lg:col-span-6 2xl:col-span-4">
-            <div class="card rounded-lg border-0">
 
-                <div class="card-body">
-                    <div class="flex items-center flex-wrap gap-2 justify-between">
-                        <h6 class="mb-2 font-bold text-lg">Distribution Maps</h6>
-                        <div class="">
-                            <select
-                                class="form-select form-select-sm w-auto bg-white dark:bg-neutral-700 border text-secondary-light">
-                                <option>Yearly</option>
-                                <option>Monthly</option>
-                                <option>Weekly</option>
-                                <option>Today</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
 
-                <div id="world-map" class="h-[200px] bg-neutral-100 dark:bg-neutral-600/30"></div>
-
-                <div class="card-body p-6 max-h-[266px] scroll-sm overflow-y-auto">
-                    <div class="">
-
-                        <div class="flex items-center justify-between gap-3 mb-3 pb-2">
-                            <div class="flex items-center w-full">
-                                <img src="{{ asset('assets/images/flags/flag1.png') }}" alt=""
-                                    class="w-10 h-10 rounded-full shrink-0 me-4">
-                                <div class="grow">
-                                    <h6 class="text-sm mb-0">USA</h6>
-                                    <span class="text-xs text-secondary-light font-medium">1,240 Users</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 w-full">
-                                <div class="w-full max-w-66 ms-auto">
-                                    <div class="progress progress-sm rounded-full" role="progressbar"
-                                        aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                        aria-valuemax="100">
-                                        <div class="progress-bar bg-primary-600 rounded-full" style="width: 80%;"></div>
-                                    </div>
-                                </div>
-                                <span class="text-secondary-light font-xs font-semibold">80%</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-3 pb-2">
-                            <div class="flex items-center w-full">
-                                <img src="{{ asset('assets/images/flags/flag2.png') }}" alt=""
-                                    class="w-10 h-10 rounded-full shrink-0 me-4">
-                                <div class="grow">
-                                    <h6 class="text-sm mb-0">Japan</h6>
-                                    <span class="text-xs text-secondary-light font-medium">1,240 Users</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 w-full">
-                                <div class="w-full max-w-66 ms-auto">
-                                    <div class="progress progress-sm rounded-full" role="progressbar"
-                                        aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                        aria-valuemax="100">
-                                        <div class="progress-bar bg-orange rounded-full" style="width: 60%;"></div>
-                                    </div>
-                                </div>
-                                <span class="text-secondary-light font-xs font-semibold">60%</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-3 pb-2">
-                            <div class="flex items-center w-full">
-                                <img src="{{ asset('assets/images/flags/flag3.png') }}" alt=""
-                                    class="w-10 h-10 rounded-full shrink-0 me-4">
-                                <div class="grow">
-                                    <h6 class="text-sm mb-0">France</h6>
-                                    <span class="text-xs text-secondary-light font-medium">1,240 Users</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 w-full">
-                                <div class="w-full max-w-66 ms-auto">
-                                    <div class="progress progress-sm rounded-full" role="progressbar"
-                                        aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                        aria-valuemax="100">
-                                        <div class="progress-bar bg-warning-600 rounded-full" style="width: 49%;"></div>
-                                    </div>
-                                </div>
-                                <span class="text-secondary-light font-xs font-semibold">49%</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex items-center w-full">
-                                <img src="{{ asset('assets/images/flags/flag4.png') }}" alt=""
-                                    class="w-10 h-10 rounded-full shrink-0 me-4">
-                                <div class="grow">
-                                    <h6 class="text-sm mb-0">Germany</h6>
-                                    <span class="text-xs text-secondary-light font-medium">1,240 Users</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 w-full">
-                                <div class="w-full max-w-66 ms-auto">
-                                    <div class="progress progress-sm rounded-full" role="progressbar"
-                                        aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                        aria-valuemax="100">
-                                        <div class="progress-bar bg-success-600 rounded-full" style="width: 100%;"></div>
-                                    </div>
-                                </div>
-                                <span class="text-secondary-light font-xs font-semibold">100%</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
+        {{-- top customers --}}
         <div class="md:col-span-12 lg:col-span-6 2xl:col-span-4">
             <div class="card h-full border-0">
-
                 <div class="card-body">
                     <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
                         <h6 class="mb-2 font-bold text-lg">Top Customers</h6>
-                        <a href="javascript:void(0)"
+                        <a href="{{ url('/member') }}"
                             class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
                             View All
                             <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
@@ -431,89 +259,40 @@
                     </div>
 
                     <div class="mt-8">
-
-                        <div class="flex items-center justify-between gap-3 mb-8">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/users/user6.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Dianne Russell</h6>
-                                    <span class="text-sm text-secondary-light font-normal">017******58</span>
+                        @forelse($topCustomers as $customer)
+                            <div class="flex items-center justify-between gap-3 mb-8">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-10 h-10 bg-primary-100 dark:bg-primary-600/25 rounded-lg shrink-0 flex items-center justify-center text-primary-600 dark:text-primary-400">
+                                        <span
+                                            class="text-lg font-medium">{{ strtoupper(substr($customer->name, 0, 1)) }}</span>
+                                    </div>
+                                    <div class="grow">
+                                        <h6 class="text-base mb-0 font-normal">{{ $customer->name }}</h6>
+                                        <span
+                                            class="text-sm text-secondary-light font-normal">{{ $customer->phone_number }}</span>
+                                    </div>
                                 </div>
+                                <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders:
+                                    {{ $customer->order_count }}</span>
                             </div>
-                            <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders: 30</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-8">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/users/user1.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Wade Warren</h6>
-                                    <span class="text-sm text-secondary-light font-normal">017******58</span>
-                                </div>
+                        @empty
+                            <div class="flex items-center justify-center py-6 text-neutral-500">
+                                No customer data available
                             </div>
-                            <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders: 30</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-8">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/users/user2.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Albert Flores</h6>
-                                    <span class="text-sm text-secondary-light font-normal">017******58</span>
-                                </div>
-                            </div>
-                            <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders: 35</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-8">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/users/user3.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Bessie Cooper</h6>
-                                    <span class="text-sm text-secondary-light font-normal">017******58</span>
-                                </div>
-                            </div>
-                            <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders: 20</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3 mb-8">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/users/user4.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">Arlene McCoy</h6>
-                                    <span class="text-sm text-secondary-light font-normal">017******58</span>
-                                </div>
-                            </div>
-                            <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders: 25</span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ asset('assets/images/users/user6.png') }}" alt=""
-                                    class="w-10 h-10 rounded-lg shrink-0">
-                                <div class="grow">
-                                    <h6 class="text-base mb-0 font-normal">John Doe</h6>
-                                    <span class="text-sm text-secondary-light font-normal">017******58</span>
-                                </div>
-                            </div>
-                            <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders: 32</span>
-                        </div>
-
+                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
-        <div class="md:col-span-12 2xl:col-span-6">
+
+        {{-- top seelling product --}}
+        <div class="md:col-span-12 2xl:col-span-8">
             <div class="card h-full border-0">
                 <div class="card-body p-6">
                     <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
-                        <h6 class="mb-2 font-bold text-lg">Top Selling Product</h6>
-                        <a href="javascript:void(0)"
+                        <h6 class="mb-2 font-bold text-lg">Top Selling Products</h6>
+                        <a href="{{ url('/product') }}"
                             class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
                             View All
                             <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
@@ -525,226 +304,61 @@
                                 <tr>
                                     <th scope="col">Items</th>
                                     <th scope="col">Price</th>
-                                    <th scope="col">Discount </th>
+                                    <th scope="col">Discount</th>
                                     <th scope="col">Sold</th>
                                     <th scope="col" class="text-center">Total Orders</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/images/product/product-img1.png') }}"
-                                                alt="" class="shrink-0 me-3 rounded-lg">
-                                            <div class="grow">
-                                                <h6 class="text-base mb-0 font-normal">Blue t-shirt</h6>
-                                                <span class="text-sm text-secondary-light font-normal">Fashion</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>$400.00</td>
-                                    <td>15%</td>
-                                    <td>300</td>
-                                    <td class="text-center">
-                                        <span
-                                            class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-8 py-1.5 rounded-full font-medium text-sm">70</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/images/product/product-img2.png') }}"
-                                                alt="" class="shrink-0 me-3 rounded-lg ">
-                                            <div class="grow">
-                                                <h6 class="text-base mb-0 font-normal">Nike Air Shoe</h6>
-                                                <span class="text-sm text-secondary-light font-normal">Fashion</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>$150.00</td>
-                                    <td>N/A</td>
-                                    <td>200</td>
-                                    <td class="text-center">
-                                        <span
-                                            class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-8 py-1.5 rounded-full font-medium text-sm">70</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/images/product/product-img3.png') }}"
-                                                alt="" class="shrink-0 me-3 rounded-lg">
-                                            <div class="grow">
-                                                <h6 class="text-base mb-0 font-normal">Woman Dresses</h6>
-                                                <span class="text-sm text-secondary-light font-normal">Fashion</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>$300.00</td>
-                                    <td>$50.00</td>
-                                    <td>1400</td>
-                                    <td class="text-center">
-                                        <span
-                                            class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-8 py-1.5 rounded-full font-medium text-sm">70</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/images/product/product-img4.png') }}"
-                                                alt="" class="shrink-0 me-3 rounded-lg">
-                                            <div class="grow">
-                                                <h6 class="text-base mb-0 font-normal">Smart Watch</h6>
-                                                <span class="text-sm text-secondary-light font-normal">Fashion</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>$400.00</td>
-                                    <td>$50.00</td>
-                                    <td>700</td>
-                                    <td class="text-center">
-                                        <span
-                                            class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-8 py-1.5 rounded-full font-medium text-sm">70</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="flex items-center">
-                                            <img src="{{ asset('assets/images/product/product-img5.png') }}"
-                                                alt="" class="shrink-0 me-3 rounded-lg">
-                                            <div class="grow">
-                                                <h6 class="text-base mb-0 font-normal">Hoodie Rose</h6>
-                                                <span class="text-sm text-secondary-light font-normal">Fashion</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>$300.00</td>
-                                    <td>25%</td>
-                                    <td>400</td>
-                                    <td class="text-center">
-                                        <span
-                                            class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-8 py-1.5 rounded-full font-medium text-sm">70</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="md:col-span-12 2xl:col-span-6">
-            <div class="card h-full border-0">
-                <div class="card-body p-6">
-                    <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
-                        <h6 class="mb-2 font-bold text-lg">Stock Report</h6>
-                        <a href="javascript:void(0)"
-                            class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
-                            View All
-                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                        </a>
-                    </div>
-                    <div class="table-responsive scroll-sm">
-                        <table class="table bordered-table mb-0 style-two">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Items</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">
-                                        <div class="max-w-[44px]2 mx-auto">
-                                            <span>Stock</span>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Nike Air Shoes</td>
-                                    <td>$400.00</td>
-                                    <td>
-                                        <div class="max-w-[44px]2 mx-auto">
-                                            <div class="w-full">
-                                                <div class="progress progress-sm rounded-full" role="progressbar"
-                                                    aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                    <div class="progress-bar bg-primary-600 rounded-full"
-                                                        style="width: 0%;"></div>
+                                @forelse($topSellingProducts as $product)
+                                    <tr>
+                                        <td>
+                                            <div class="flex items-center">
+                                                @if ($product->image)
+                                                    <img src="{{ asset('storage/' . $product->image) }}"
+                                                        alt="{{ $product->name }}"
+                                                        class="w-10 h-10 object-cover shrink-0 me-3 rounded-lg">
+                                                @else
+                                                    <div
+                                                        class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center shrink-0 me-3">
+                                                        <iconify-icon icon="mdi:cube-outline"
+                                                            class="text-gray-500 text-xl"></iconify-icon>
+                                                    </div>
+                                                @endif
+                                                <div class="grow">
+                                                    <h6 class="text-base mb-0 font-normal">{{ $product->name }}</h6>
+                                                    <span
+                                                        class="text-sm text-secondary-light font-normal">{{ $product->category_name ?? 'Uncategorized' }}</span>
                                                 </div>
                                             </div>
-                                            <span class="mt-3 text-secondary-light text-sm font-medium">Out of Stock</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nike Air Shoes</td>
-                                    <td>$300.00</td>
-                                    <td>
-                                        <div class="max-w-[44px]2 mx-auto">
-                                            <div class="w-full">
-                                                <div class="progress progress-sm rounded-full" role="progressbar"
-                                                    aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                                    aria-valuemax="100">w
-                                                    <div class="progress-bar bg-danger-600 rounded-full"
-                                                        style="width: 40%;"></div>
-                                                </div>
-                                            </div>
-                                            <span class="mt-3 text-secondary-light text-sm font-medium">18 Low Stock</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nike Air Shoes</td>
-                                    <td>$400.00</td>
-                                    <td>
-                                        <div class="max-w-[44px]2 mx-auto">
-                                            <div class="w-full">
-                                                <div class="progress progress-sm rounded-full" role="progressbar"
-                                                    aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                    <div class="progress-bar bg-success-600 rounded-full"
-                                                        style="width: 80%;"></div>
-                                                </div>
-                                            </div>
-                                            <span class="mt-3 text-secondary-light text-sm font-medium">80 High
-                                                Stock</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nike Air Shoes</td>
-                                    <td>$300.00</td>
-                                    <td>
-                                        <div class="max-w-[44px]2 mx-auto">
-                                            <div class="w-full">
-                                                <div class="progress progress-sm rounded-full" role="progressbar"
-                                                    aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                    <div class="progress-bar bg-success-600 rounded-full"
-                                                        style="width: 50%;"></div>
-                                                </div>
-                                            </div>
-                                            <span class="mt-3 text-secondary-light text-sm font-medium">50 High
-                                                Stock</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Nike Air Shoes</td>
-                                    <td>$150.00</td>
-                                    <td>
-                                        <div class="max-w-[44px]2 mx-auto">
-                                            <div class="w-full">
-                                                <div class="progress progress-sm rounded-full" role="progressbar"
-                                                    aria-label="Success example" aria-valuenow="25" aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                    <div class="progress-bar bg-success-600 rounded-full"
-                                                        style="width: 70%;"></div>
-                                                </div>
-                                            </div>
-                                            <span class="mt-3 text-secondary-light text-sm font-medium">70 High
-                                                Stock</span>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td>Rp {{ number_format($product->price, 0, '.', '.') }}</td>
+                                        <td>
+                                            @if ($product->is_discount)
+                                                @if ($product->discount_type == 'percentage')
+                                                    {{ $product->discount }}%
+                                                @else
+                                                    Rp {{ number_format($product->discount, 0, '.', '.') }}
+                                                @endif
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
+                                        <td>{{ $product->total_sold }}</td>
+                                        <td class="text-center">
+                                            <span
+                                                class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-4 py-1.5 rounded-full font-medium text-sm">
+                                                {{ $product->order_count }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-neutral-500">
+                                            No product sales data available
+                                        </td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -752,4 +366,77 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var revenueData = @json($revenueData['revenue']);
+            var expenseData = @json($revenueData['expenses']);
+
+            var options = {
+                series: [{
+                    name: 'Revenue',
+                    data: revenueData
+                }, {
+                    name: 'Expense',
+                    data: expenseData
+                }],
+                colors: ['#487FFF', '#FF9F29'],
+                chart: {
+                    type: 'bar',
+                    height: 250,
+                    toolbar: {
+                        show: false
+                    },
+                },
+                grid: {
+                    show: true,
+                    borderColor: '#D1D5DB',
+                    strokeDashArray: 4,
+                    position: 'back',
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: 10,
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                        'Dec'
+                    ],
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function(value) {
+                            return "Rp " + new Intl.NumberFormat('id-ID').format(value);
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return "Rp " + new Intl.NumberFormat('id-ID').format(val);
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1,
+                    width: 18,
+                },
+            };
+
+            if (document.querySelector("#paymentStatusChart")) {
+                var chart = new ApexCharts(document.querySelector("#paymentStatusChart"), options);
+                chart.render();
+            }
+        });
+    </script>
 @endsection

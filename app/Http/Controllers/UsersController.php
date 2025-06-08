@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -33,19 +34,17 @@ class UsersController extends Controller
             'profile_image' => 'nullable|image|max:2048',
         ]);
 
+        $userData = $request->except(['_token', 'password_confirmation', 'profile_image']);
+        $userData['password'] = Hash::make($request->password);
+        $userData['join_date'] = now();
+
+
         if (
-            isset($userData['role']) &&
             $userData['role'] === 'super_admin' &&
             Auth::user()->role !== 'super_admin'
         ) {
             return back()->with('error', 'Only Super Admin can create another Super Admin user.');
         }
-
-        $userData = $request->except(['_token', 'password_confirmation', 'profile_image']);
-        $userData['password'] = Hash::make($request->password);
-
-        $userData['join_date'] = now();
-
 
         if ($request->hasFile('profile_image')) {
             $path = $request->file('profile_image')->store('profile_images', 'public');
@@ -71,12 +70,13 @@ class UsersController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone_number' => 'nullable|string|max:20',
-            'role' => 'required|string|in:user,staff,admin,super_admin',
+            'role' => 'required|string|in:operator,admin,super_admin',
             'is_active' => 'required|boolean',
             'profile_image' => 'nullable|image|max:2048',
         ];
 
-        if ($request->filled('password')) {
+        // Hanya validasi password jika user yang login adalah super_admin DAN password field diisi
+        if (Auth::user()->role === 'super_admin' && $request->filled('password')) {
             $rules['password'] = 'required|min:6|confirmed';
         }
 
@@ -84,16 +84,26 @@ class UsersController extends Controller
 
         $userData = $request->except(['_token', 'password_confirmation', 'profile_image']);
 
-        if ($request->filled('password')) {
-            $userData['password'] = Hash::make($request->password);
+        if ($userData['role'] === 'super_admin' && Auth::user()->role !== 'super_admin') {
+            return back()->with('error', 'Only Super Admin can assign Super Admin role.');
         }
 
-        // Handle profile image
+        // Update password hanya jika:
+        // 1. User yang login adalah super_admin
+        // 2. Password field diisi
+        if (Auth::user()->role === 'super_admin' && $request->filled('password')) {
+            $userData['password'] = Hash::make($request->password);
+        } else {
+            // Hapus key password dari userData jika tidak diupdate
+            unset($userData['password']);
+        }
+
+        // Sisanya sama seperti sebelumnya
         if ($request->hasFile('profile_image')) {
-            // Delete old image if exists
             if ($user->profile_image) {
                 Storage::disk('public')->delete($user->profile_image);
             }
+
             $path = $request->file('profile_image')->store('profile_images', 'public');
             $userData['profile_image'] = $path;
         }
@@ -126,12 +136,14 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // Check if user is super_admin
-        if ($user->role === 'super_admin') {
+        if (Auth::id() === $user->id) {
+            return back()->with('error', 'You cannot delete your own account.');
+        }
+
+        if ($user->role === 'super_admin' && Auth::user()->id !==  1) {
             return back()->with('error', 'Super Admin users cannot be deleted.');
         }
 
-        // Delete profile image if exists
         if ($user->profile_image) {
             Storage::disk('public')->delete($user->profile_image);
         }
@@ -139,5 +151,30 @@ class UsersController extends Controller
         $user->delete();
 
         return back()->with('success', 'User deleted successfully');
+    }
+
+    public function changePassword(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:6|confirmed|different:current_password',
+        ], [
+            'password.confirmed' => 'The password confirmation does not match.',
+            'password.different' => 'The new password must be different from your current password.',
+        ]);
+
+        // Check if current password is correct
+        $user = Auth::user();
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Your current password is incorrect.']);
+        }
+
+        // Update password manually without Eloquent's save()
+        DB::table('users')
+            ->where('id', $user->id)
+            ->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->back()->with('success', 'Password changed successfully!');
     }
 }

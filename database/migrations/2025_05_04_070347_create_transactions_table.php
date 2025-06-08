@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('member_id')->nullable();
+            $table->string('cashier')->nullable();
             $table->integer('total_amount');
             $table->enum('status', [
                 'pending',

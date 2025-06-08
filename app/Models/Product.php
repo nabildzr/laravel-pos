@@ -45,4 +45,15 @@ class Product extends Model
     // {
     //     return $query->where('is_active', 1);
     // }
+
+
+    // seeder necessity
+    public function decrement($column, $amount = 1, array $extra = [])
+    {
+        if ($column === 'stock' && $this->stock - $amount < 0) {
+            $amount = $this->stock; 
+        }
+
+        return parent::decrement($column, $amount, $extra);
+    }
 }

@@ -2,13 +2,18 @@
 @php
     $title = 'Users List';
     $subTitle = 'Users List';
-    $script = '<script>
-        $(".remove-item-btn").on("click", function() {
-            $(this).closest("tr").addClass("hidden")
+    $script = '<script src="' . asset('assets/js/data-table.js') . '"></script>
+    <script>
+        $(".remove-button").on("click", function() {
+            $(this).closest(".alert").addClass("hidden")
         });
-    </script>';
+    </script>
+    
+    
+    
+    ';
 @endphp
 
 @section('content')
-   @livewire('users.users-list-component')
+    @livewire('users.users-list-component')
 @endsection

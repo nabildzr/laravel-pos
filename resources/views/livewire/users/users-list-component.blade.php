@@ -17,7 +17,7 @@
                          <option value="0">Inactive</option>
                      </select>
                      <button wire:click="searchUser"
-                         class="btn-icon bg-neutral-600 p-2 px-3  dark:text-white border-neutral-200 dark:border-neutral-500 rounded-lg ml-2">
+                         class="btn-icon bg-neutral-200 dark:bg-neutral-600 border border-neutral-600  p-2 px-3  dark:text-white  dark:border-neutral-500 rounded-lg ml-2">
                          <div wire:loading.remove wire:target="search,is_active">
                              <iconify-icon icon="ion:search-outline" class="icon"></iconify-icon>
                          </div>
@@ -34,14 +34,16 @@
              </div>
              <div class="card-body p-6">
                  <div class="table-responsive scroll-sm">
-                     <table class="table bordered-table sm-table mb-0">
-                         <thead>
+                     <table id="selection-table" class="table bordered-table sm-table mb-0">
+                        <div>
+                            @include('layout.feedback')
+                        </div>
+                        <thead>
                              <tr>
                                  <th scope="col">
                                      <div class="flex items-center gap-10">
                                          <div class="form-check style-check flex items-center">
-                                             <input class="form-check-input rounded border input-form-dark"
-                                                 type="checkbox" name="checkbox" id="selectAll">
+
                                          </div>
                                          S.L
                                      </div>
@@ -61,8 +63,6 @@
                                      <td>
                                          <div class="flex items-center gap-10">
                                              <div class="form-check style-check flex items-center">
-                                                 <input class="form-check-input rounded border border-neutral-400"
-                                                     type="checkbox" name="checkbox" id="SL-1">
                                              </div>
                                              {{ $user->id }}
                                          </div>
@@ -72,9 +72,15 @@
                                      </td>
                                      <td>
                                          <div class="flex items-center">
-                                             <img src="{{ asset('assets/images/user-list/user-list1.png') }}"
-                                                 alt=""
-                                                 class="w-10 h-10 rounded-full shrink-0 me-2 overflow-hidden">
+                                             @if ($user->profile_image)
+                                                 <img src="{{ asset('storage/' . $user->profile_image) }}"
+                                                     alt="{{ $user->name }}"
+                                                     class="w-10 h-10 rounded-full shrink-0 me-2 overflow-hidden">
+                                             @else
+                                                 <img src="{{ asset('assets/images/user-list/user-list1.png') }}"
+                                                     alt="{{ $user->name }}"
+                                                     class="w-10 h-10 rounded-full shrink-0 me-2 overflow-hidden">
+                                             @endif
                                              <div class="grow">
                                                  <span
                                                      class="text-base mb-0 font-normal text-secondary-light">{{ $user->name }}</span>
@@ -84,8 +90,7 @@
                                      <td><span
                                              class="text-base mb-0 font-normal text-secondary-light">{{ $user->email }}</span>
                                      </td>
-                                     {{-- <td>HR</td> --}}
-                                     <td>{{ $user->role }}</td>
+                                     <td>{{ ucwords(str_replace('_', ' ', $user->role)) }}</td>
                                      <td class="text-center">
                                          @if ($user->is_active == 1)
                                              <span
@@ -106,48 +111,22 @@
                                                  class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 bg-hover-success-200 font-medium w-10 h-10 flex justify-center items-center rounded-full">
                                                  <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
                                              </a>
-                                             <button type="button"
-                                                 wire:click="confirmDelete({{ $user->id }}, '{{ $user->name }}')"
-                                                 class="bg-danger-100 dark:bg-danger-600/25 hover:bg-danger-200 text-danger-600 dark:text-danger-500 font-medium w-10 h-10 flex justify-center items-center rounded-full">
+                                            @if (auth()->id() !== $user->id)
+
+                                             <a data-modal-target="delete-modal-{{ $user->id }}"
+                                                 data-modal-toggle="delete-modal-{{ $user->id }}"
+                                                 class="bg-danger-100 dark:bg-danger-600/25 hover:bg-danger-200 text-danger-600 dark:text-danger-500 font-medium w-10 h-10 flex justify-center items-center rounded-full cursor-pointer">
                                                  <iconify-icon icon="fluent:delete-24-regular"
                                                      class="menu-icon"></iconify-icon>
-                                             </button>
+                                             </a>
+                                             @endif
                                          </div>
                                      </td>
                                  </tr>
 
-                                 @if ($showDeleteModal)
-                                     <div class="modal-backdrop fade show"></div>
-                                     <div class="modal fade show" tabindex="-1" role="dialog"
-                                         style="display: block; padding-right: 17px;">
-                                         <div class="modal-dialog">
-                                             <div class="modal-content">
-                                                 <div class="modal-header">
-                                                     <h5 class="modal-title text-lg font-medium">Confirm Delete</h5>
-                                                     <button type="button" class="btn-close"
-                                                         wire:click="cancelDelete()"></button>
-                                                 </div>
-                                                 <div class="modal-body">
-                                                     <p>Are you sure you want to delete <span
-                                                             class="font-semibold">{{ $deleteUserName }}</span>?</p>
-                                                     @if ($users->where('id', $deleteUserId)->first() && $users->where('id', $deleteUserId)->first()->role === 'super_admin')
-                                                         <div
-                                                             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-3">
-                                                             <strong>Warning!</strong> Super Admin users cannot be
-                                                             deleted.
-                                                         </div>
-                                                     @endif
-                                                 </div>
-                                                 <div class="modal-footer">
-                                                     <button type="button" class="btn btn-secondary"
-                                                         wire:click="cancelDelete()">Cancel</button>
-                                                     <button type="button" class="btn btn-danger"
-                                                         wire:click="deleteUser()">Delete</button>
-                                                 </div>
-                                             </div>
-                                         </div>
-                                     </div>
-                                 @endif
+
+                                 <x-confirm-delete-modal :modalId="'delete-modal-' . $user->id" :route="route('deleteUser', $user->id)" :message="'Are you sure you want to delete ' . $user->name . '?'" />
+
                              @empty
                                  <tr>
                                      <td colspan="7" class="text-center py-8">

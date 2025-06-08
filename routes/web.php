@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\BusinessSettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ComponentspageController;
@@ -42,12 +43,14 @@ Route::get('/logout', [AuthenticationController::class, 'logout'])->name('logout
 
 Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
 
-    Route::get('/add-user', [UsersController::class, 'addUser'])->name('addUser');
-    Route::post('/store-user', [UsersController::class, 'storeUser'])->name('storeUser');
-    Route::get('/edit-user/{id}', [UsersController::class, 'editUser'])->name('editUser');
-    Route::put('/update-user/{id}', [UsersController::class, 'updateUser'])->name('updateUser');
-    Route::get('/view-user/{id}', [UsersController::class, 'viewUserProfile'])->name('viewUserProfile');
-    Route::delete('/delete-user/{id}', [UsersController::class, 'deleteUser'])->name('deleteUser');
+    Route::middleware(['auth', 'multi_user'])->group(function () {
+        Route::get('/add-user', [UsersController::class, 'addUser'])->name('addUser');
+        Route::post('/store-user', [UsersController::class, 'storeUser'])->name('storeUser');
+        Route::get('/edit-user/{id}', [UsersController::class, 'editUser'])->name('editUser');
+        Route::put('/update-user/{id}', [UsersController::class, 'updateUser'])->name('updateUser');
+        Route::get('/view-user/{id}', [UsersController::class, 'viewUserProfile'])->name('viewUserProfile');
+        Route::delete('/delete-user/{id}', [UsersController::class, 'deleteUser'])->name('deleteUser');
+    });
 
     // just auth
     Route::middleware(['auth'])->group(function () {
@@ -84,10 +87,11 @@ Route::middleware(['setUserInactiveOnSessionExpire'])->group(function () {
     // Users
     Route::middleware(['auth'])->prefix('users')->group(function () {
         Route::controller(UsersController::class)->group(function () {
-            Route::get('/add-user', 'addUser')->name('addUser');
-            Route::get('/users-grid', 'usersGrid')->name('usersGrid');
-            Route::get('/users-list', 'usersList')->name('usersList');
+            Route::get('/add-user', 'addUser')->name('addUser')->middleware('multi_user');
+            Route::get('/users-list', 'usersList')->name('usersList')->middleware('multi_user');
             Route::get('/view-profile', 'viewProfile')->name('viewProfile');
+            Route::post('/change-password', 'changePassword')->name('changePassword');
+            Route::delete('/users/{id}', 'deleteUser')->name('deleteUser');
         });
     });
 
@@ -298,15 +302,10 @@ Route::prefix('forms')->group(function () {
 });
 
 // Settings
-Route::prefix('settings')->group(function () {
-    Route::controller(SettingsController::class)->group(function () {
-        Route::get('/company', 'company')->name('company');
-        Route::get('/currencies', 'currencies')->name('currencies');
-        Route::get('/language', 'language')->name('language');
-        Route::get('/notification', 'notification')->name('notification');
-        Route::get('/notification-alert', 'notificationAlert')->name('notificationAlert');
-        Route::get('/payment-gateway', 'paymentGateway')->name('paymentGateway');
-        Route::get('/theme', 'theme')->name('theme');
+Route::middleware(['auth', 'multi_user'])->prefix('settings')->group(function () {
+    Route::controller(BusinessSettingController::class)->group(function () {
+        Route::get('/business', 'index')->name('business.settings');
+        Route::post('/business', 'update')->name('business.update');
     });
 });
 

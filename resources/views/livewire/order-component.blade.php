@@ -27,7 +27,7 @@
     </div>
 
     <div>
-        <div class="mb-4">
+        {{-- <div class="mb-4">
             <input type="text" wire:model.lazy="barcode" wire:keydown.enter="scanBarcode"
                 placeholder="Pindahkan cursor ke input ini dan klik, lalu Scan atau ketik barcode di sini"
                 class=" px-3 py-2 w-full form-control" autofocus>
@@ -47,7 +47,7 @@
                     <button onclick="closeCameraScanner()" style="position:absolute;top:10px;right:10px;">Tutup</button>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <div class="grid md:flex gap-5 md:justify-center">

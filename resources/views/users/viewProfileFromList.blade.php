@@ -9,17 +9,25 @@
         <div class="col-span-12 lg:col-span-4">
             <div
                 class="user-grid-card relative border border-neutral-200 dark:border-neutral-600 rounded-2xl overflow-hidden bg-white dark:bg-neutral-700 h-full">
-                <img src="{{ asset('assets/images/user-grid/user-grid-bg1.png') }}" alt=""
-                    class="w-full object-fit-cover">
+                <img src="{{ asset('assets/images/banner.png') }}" alt=""
+                    style="width: 100%; height: 10px object-fit: cover;">
                 <div class="pb-6 ms-6 mb-6 me-6 -mt-[100px]">
                     <div class="text-center border-b border-neutral-200 dark:border-neutral-600">
-                        <img src="{{ asset('assets/images/user-list/user-list1.png') }}" alt=""
-                            class="border br-white border-width-2-px w-200-px h-[200px] rounded-full object-fit-cover mx-auto">
+                        @if (isset($user) && !empty($user->profile_image))
+                            <img src="{{ asset('storage/' . $user->profile_image) }}"
+                                alt="Profile Image" class="border br-white border-width-2-px rounded-full object-fit-cover mx-auto" style="width: 200px; height: 200px; object-fit: cover;">
+                        @else
+                            <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt="Profile Image"
+                                class="border br-white border-width-2-px w-200-px h-[200px] rounded-full object-fit-cover mx-auto">
+                        @endif
                         <h6 class="mb-0 mt-4">{{ $user->name ?? 'Not Found' }}</h6>
                         <span class="text-secondary-light mb-4">{{ $user->email ?? 'Not Found' }}</span>
                         <p class="my-3">
                             <span
-                                class="px-3 py-1 rounded-full  {{ $user->is_active ? 'bg-success-100 text-success-600 dark:text-success-600' : 'bg-neutral-200 dark:text-neutral-800' }}">
+                                class="px-3 py-1 rounded-full text-success-600 dark:text-success-600
+                                    {{ $user->is_active 
+                                        ? 'bg-success-100 ' 
+                                        : 'bg-neutral-200 ' }}">
                                 {{ $user->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </p>

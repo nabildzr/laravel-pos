@@ -7,7 +7,7 @@
 <body class="dark:bg-neutral-800 bg-neutral-100 dark:text-white">
 
     <section class="bg-white dark:bg-dark-2 flex flex-wrap min-h-[100vh] justify-center">
-     
+
         <div class="lg:w-1/2 py-8 px-6 flex flex-col justify-center">
             <div class="lg:max-w-[464px] mx-auto w-full">
                 <div>
@@ -42,13 +42,14 @@
                         </div>
                         <span
                             class="toggle-password ri-eye-line cursor-pointer absolute end-0 top-1/2 -translate-y-1/2 me-4 text-secondary-light"
-                            data-toggle="#your-password"></span>
+                            data-toggle="#your-password"
+                            onclick="initializePasswordToggle('.toggle-password')"></span>
                     </div>
                     <div class="mt-7">
                         <div class="flex justify-between gap-2">
                             <div class="flex items-center">
-                                <input class="form-check-input border border-neutral-300" type="checkbox" name="remember_me" value=""
-                                    id="remeber">
+                                <input class="form-check-input border border-neutral-300" type="checkbox"
+                                    name="remember_me" value="" id="remeber">
                                 <label class="ps-2" for="remeber">Remember me </label>
                             </div>
                         </div>
@@ -67,26 +68,34 @@
     </section>
 
     @php
-        $script = '<script>
-            // ================== Password Show Hide Js Start ==========
-            function initializePasswordToggle(toggleSelector) {
-                $(toggleSelector).on("click", function() {
-                    $(this).toggleClass("ri-eye-off-line");
-                    var input = $($(this).attr("data-toggle"));
-                    if (input.attr("type") === "password") {
-                        input.attr("type", "text");
-                    } else {
-                        input.attr("type", "password");
-                    }
-                });
-            }
-            // Call the function
-            initializePasswordToggle(".toggle-password");
-            // ========================= Password Show Hide Js End ===========================
-        </script>';
+        $script = '';
     @endphp
 
     <x-script />
+    <script>
+        $(".remove-button").on("click", function() {
+            $(this).closest(".alert").addClass("hidden")
+        });
+    </script>
+    <script>
+        // ================== Password Show Hide Js Start ==========
+        function initializePasswordToggle(toggleSelector) {
+            // Unbind previous click handlers to avoid double binding
+            $(document).off("click", toggleSelector);
+            $(document).on("click", toggleSelector, function() {
+                $(this).toggleClass("ri-eye-off-line");
+                var input = $($(this).attr("data-toggle"));
+                if (input.attr("type") === "password") {
+                    input.attr("type", "text");
+                } else {
+                    input.attr("type", "password");
+                }
+            });
+        }
+        // Call the function
+        initializePasswordToggle(".toggle-password");
+        // ========================= Password Show Hide Js End ===========================
+    </script>
 
 </body>
 
