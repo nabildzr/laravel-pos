@@ -153,7 +153,7 @@
                         <div class="card-body p-0">
                             <div class="py-4 px-6 border-b border-neutral-200 dark:border-neutral-600">
                                 <div class="flex items-start gap-3">
-                                    <img src="{{ asset('assets/images/user-list/user-list1.png') }}" alt="" class="w-10 h-10 rounded-full">
+                                    <img src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="" class="w-10 h-10 rounded-full">
                                     <div class="">
                                         <div class="flex items-center flex-wrap gap-2">
                                             <h6 class="mb-0 text-lg">Kathryn Murphy</h6>

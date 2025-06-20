@@ -52,7 +52,7 @@
                                 alt="Profile Image"class="border br-white border-width-2-px  rounded-full object-fit-cover mx-auto"
                                 style="width: 200px; height: 200px; object-fit: cover;">
                         @else
-                            <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt="Profile Image"
+                            <img src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="Profile Image"
                                 class="border br-white border-width-2-px w-200-px h-[200px] rounded-full object-fit-cover mx-auto">
                         @endif
 

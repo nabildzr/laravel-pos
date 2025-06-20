@@ -132,7 +132,7 @@
                         <button type="button" class="uploaded-img__remove absolute top-0 end-0 z-1 text-2xxl line-height-1 me-8 mt-2 flex">
                             <iconify-icon icon="radix-icons:cross-2" class="text-xl text-danger-600"></iconify-icon>
                         </button>
-                        <img id="uploaded-img__preview" class="w-full h-full object-fit-cover" src="{{ asset('assets/images/user.png') }}" alt="image">
+                        <img id="uploaded-img__preview" class="w-full h-full object-fit-cover" src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="image">
                     </div>
 
                     <label class="upload-file h-[120px] w-[120px] border input-form-light rounded-lg overflow-hidden border-dashed bg-neutral-50 dark:bg-neutral-600 hover:bg-neutral-200 flex items-center flex-col justify-center gap-1" for="upload-file">

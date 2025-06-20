@@ -85,7 +85,7 @@
                                 <td><a href="javascript:void(0)" class="text-primary-600">#526534</a></td>
                                 <td>
                                     <div class="flex items-center">
-                                        <img src="{{ asset('assets/images/user-list/user-list1.png') }}" alt="" class="shrink-0 me-3 rounded-lg">
+                                        <img src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="" class="shrink-0 me-3 rounded-lg">
                                         <h6 class="text-base mb-0 font-medium grow">Kathryn Murphy</h6>
                                     </div>
                                 </td>
@@ -395,7 +395,7 @@
                                 <td><a href="javascript:void(0)" class="text-primary-600">#526534</a></td>
                                 <td>
                                     <div class="flex items-center">
-                                        <img src="{{ asset('assets/images/user-list/user-list1.png') }}" alt="" class="shrink-0 me-3 rounded-lg">
+                                        <img src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="" class="shrink-0 me-3 rounded-lg">
                                         <h6 class="text-base mb-0 font-medium grow">Kathryn Murphy</h6>
                                     </div>
                                 </td>

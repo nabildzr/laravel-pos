@@ -14,10 +14,12 @@
                 <div class="pb-6 ms-6 mb-6 me-6 -mt-[100px]">
                     <div class="text-center border-b border-neutral-200 dark:border-neutral-600">
                         @if (isset($user) && !empty($user->profile_image))
-                            <img src="{{ asset('storage/' . $user->profile_image) }}"
-                                alt="Profile Image" class="border br-white border-width-2-px rounded-full object-fit-cover mx-auto" style="width: 200px; height: 200px; object-fit: cover;">
+                            <img src="{{ asset('storage/' . $user->profile_image) }}" alt="Profile Image"
+                                class="border br-white border-width-2-px rounded-full object-fit-cover mx-auto"
+                                style="width: 200px; height: 200px; object-fit: cover;">
                         @else
-                            <img src="{{ asset('assets/images/user-grid/user-grid-img14.png') }}" alt="Profile Image"
+                            <img src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg"
+                                alt="Profile Image"
                                 class="border br-white border-width-2-px w-200-px h-[200px] rounded-full object-fit-cover mx-auto">
                         @endif
                         <h6 class="mb-0 mt-4">{{ $user->name ?? 'Not Found' }}</h6>
@@ -25,9 +27,7 @@
                         <p class="my-3">
                             <span
                                 class="px-3 py-1 rounded-full text-success-600 dark:text-success-600
-                                    {{ $user->is_active 
-                                        ? 'bg-success-100 ' 
-                                        : 'bg-neutral-200 ' }}">
+                                    {{ $user->is_active ? 'bg-success-100 ' : 'bg-neutral-200 ' }}">
                                 {{ $user->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </p>

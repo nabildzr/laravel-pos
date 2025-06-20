@@ -221,7 +221,7 @@
                 @if(isset($user) && !empty($user->profile_image))
                             <img src="{{ asset('storage/' . $user->profile_image) }}" alt="image" class="w-10 h-10 object-fit-cover rounded-full">
                         @else
-                            <img src="{{ asset('assets/images/user.png') }}" alt="image" class="w-10 h-10 object-fit-cover rounded-full">
+                            <img src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg" alt="image" class="w-10 h-10 object-fit-cover rounded-full">
                         @endif
                 </button>
                 <div id="dropdownProfile" class="z-10 hidden bg-white dark:bg-neutral-700 rounded-lg shadow-lg dropdown-menu-sm p-3">

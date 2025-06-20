@@ -77,7 +77,7 @@
                                                      alt="{{ $user->name }}"
                                                      class="w-10 h-10 rounded-full shrink-0 me-2 overflow-hidden">
                                              @else
-                                                 <img src="{{ asset('assets/images/user-list/user-list1.png') }}"
+                                                 <img src="https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg"
                                                      alt="{{ $user->name }}"
                                                      class="w-10 h-10 rounded-full shrink-0 me-2 overflow-hidden">
                                              @endif
@@ -85,6 +85,7 @@
                                                  <span
                                                      class="text-base mb-0 font-normal text-secondary-light">{{ $user->name }}</span>
                                              </div>
+
                                          </div>
                                      </td>
                                      <td><span

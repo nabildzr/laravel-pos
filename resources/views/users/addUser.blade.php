@@ -33,7 +33,7 @@
                             <h6 class="text-base text-neutral-600 dark:text-neutral-200 mb-4">
                                 {{ $isEdit ? 'Update User' : 'Create New User' }}</h6>
 
-
+                            @include('layout.feedback')
 
                             <form action="{{ $isEdit ? route('updateUser', $user->id) : route('storeUser') }}" method="POST"
                                 enctype="multipart/form-data">
@@ -55,7 +55,7 @@
                                         </div>
                                         <div class="avatar-preview">
                                             <div id="imagePreview"
-                                                style="{{ $isEdit && isset($user->profile_image) ? 'background-image: url(' . asset('storage/' . $user->profile_image) . ')' : '' }}">
+                                                style="{{ $isEdit && isset($user->profile_image) && !empty($user->profile_image) ? 'background-image: url(' . asset('storage/' . $user->profile_image) . ')' : 'background-image: url(https://i.pinimg.com/736x/d9/d8/8e/d9d88e3d1f74e2b8ced3df051cecb81d.jpg)' }}">
                                             </div>
                                         </div>
                                     </div>
