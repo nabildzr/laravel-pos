@@ -2,9 +2,8 @@
 
 @php
     $title = 'Dashboard';
-    $subTitle = 'eCommerce';
+    $subTitle = 'Mini Cafe/Restaurant';
     // $script = '<script src="' . asset('assets/js/homethreeChart.js') . '"></script> ';
-    
 @endphp
 
 
@@ -125,74 +124,78 @@
                     </div>
                 </div>
             </div>
+        @endif
 
-            @endif
-
-            <div class="md:col-span-12 lg:col-span-6 {{ $isAdminUser ? '2xl:col-span-9' : '2xl:col-span-12' }}">
-                <div class="card h-full border-0">
-                    <div class="card-body p-6">
-                        <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
-                            <h6 class="mb-2 font-bold text-lg">Recent Orders</h6>
-                            <a href="{{ url('/transaction') }}"
-                                class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
-                                View All
-                                <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                            </a>
-                        </div>
-                        <div class="table-responsive scroll-sm">
-                            <table class="table bordered-table mb-0">
-                                <thead>
+        <div class="md:col-span-12 lg:col-span-6 {{ $isAdminUser ? '2xl:col-span-9' : '2xl:col-span-12' }}">
+            <div class="card h-full border-0">
+                <div class="card-body p-6">
+                    <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
+                        <h6 class="mb-2 font-bold text-lg">Recent Orders</h6>
+                        <a href="{{ url('/transaction') }}"
+                            class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
+                            View All
+                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
+                        </a>
+                    </div>
+                    <div class="table-responsive scroll-sm">
+                        <table class="table bordered-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Users</th>
+                                    <th scope="col">Invoice</th>
+                                    <th scope="col">Items</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col" class="text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($orders as $order)
                                     <tr>
-                                        <th scope="col">Users</th>
-                                        <th scope="col">Invoice</th>
-                                        <th scope="col">Items</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col" class="text-center">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (\App\Models\Transaction::orderBy('created_at', 'desc')->take(5)->get() as $order)
-                                        <tr>
-                                            <td>
-                                                <div class="flex items-center">
-                                                    <img src="{{ asset('assets/images/users/user1.png') }}" alt=""
-                                                        class="shrink-0 me-3 rounded-lg">
-                                                    <span class="text-lg text-secondary-light font-semibold grow">
-                                                        {{ optional($order->member)->name ?? 'Customer' }}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td>#{{ $order->invoice_number ?? $order->id }}</td>
-                                            <td>
-                                                @php
-                                                    $items = $order->details ?? [];
-                                                @endphp
-                                                {{ $items->count() > 0 ? $items->pluck('product.name')->implode(', ') : '-' }}
-                                            </td>
+                                        <td>
+                                            <div class="flex items-center">
+                                                <img src="{{ asset('assets/images/users/user1.png') }}" alt=""
+                                                    class="shrink-0 me-3 rounded-lg">
+                                                <span class="text-lg text-secondary-light font-semibold grow">
+                                                    {{ optional($order->member)->name ?? 'Customer' }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>#{{ $order->invoice_number ?? $order->id }}</td>
+                                        <td>
+                                            @php
+                                                $items = $order->details ?? [];
+                                            @endphp
+                                            {{ $items->count() > 0 ? $items->pluck('product.name')->implode(', ') : '-' }}
+                                        </td>
 
-                                            <td>
-                                                Rp {{ number_format($order->total_amount, 0, '.', '.') }}
-                                            </td>
-                                            <td class="text-center">
-                                                @if ($order->status == 'paid')
-                                                    <span
-                                                        class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-6 py-1.5 rounded-full font-medium text-sm">Paid</span>
-                                                @else
-                                                    <span
-                                                        class="bg-warning-100 dark:bg-warning-600/25 text-warning-600 dark:text-warning-400 px-6 py-1.5 rounded-full font-medium text-sm">{{ ucfirst($order->status) }}</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                        <td>
+                                            Rp {{ number_format($order->total_amount, 0, '.', '.') }}
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($order->status == 'paid')
+                                                <span
+                                                    class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-6 py-1.5 rounded-full font-medium text-sm">Paid</span>
+                                            @else
+                                                <span
+                                                    class="bg-warning-100 dark:bg-warning-600/25 text-warning-600 dark:text-warning-400 px-6 py-1.5 rounded-full font-medium text-sm">{{ ucfirst($order->status) }}</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class=" py-4 text-neutral-500" style="text-align: center">
+                                            No transaction data available
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
 
-    @if ($isAdminUser)
-
+        @if ($isAdminUser)
             {{-- top payment method --}}
             <div class="md:col-span-12 lg:col-span-6 2xl:col-span-3">
                 <div class="card h-full border-0">
@@ -227,156 +230,157 @@
                                         Rp {{ number_format($data['recent_transaction']->total_amount, 0, '.', '.') }}
                                     </span>
                                 </div>
+
                             @empty
                                 <div class="text-center py-4 text-neutral-500">No transaction data available</div>
                             @endforelse
 
-                            @if (count($transactionsByPaymentMethod) == 0)
-                                <!-- Fallback placeholder content -->
-                                <div class="flex items-center justify-between gap-3 mb-5">
-                                    <div class="flex items-center gap-2">
-                                        <div
-                                            class="w-10 h-10 rounded-lg shrink-0 bg-neutral-100 text-neutral-600 flex items-center justify-center">
-                                            <iconify-icon icon="heroicons:credit-card" class="text-xl"></iconify-icon>
+                            {{-- @if (count($transactionsByPaymentMethod) == 0)
+                                    <!-- Fallback placeholder content -->
+                                    <div class="flex items-center justify-between gap-3 mb-5">
+                                        <div class="flex items-center gap-2">
+                                            <div
+                                                class="w-10 h-10 rounded-lg shrink-0 bg-neutral-100 text-neutral-600 flex items-center justify-center">
+                                                <iconify-icon icon="heroicons:credit-card" class="text-xl"></iconify-icon>
+                                            </div>
+                                            <div class="grow">
+                                                <h6 class="text-base mb-0 font-normal">Cash</h6>
+                                                <span class="text-sm text-secondary-light font-normal">No transactions
+                                                    yet</span>
+                                            </div>
                                         </div>
-                                        <div class="grow">
-                                            <h6 class="text-base mb-0 font-normal">Cash</h6>
-                                            <span class="text-sm text-secondary-light font-normal">No transactions
-                                                yet</span>
-                                        </div>
+                                        <span class="text-neutral-600 text-base font-medium">Rp 0</span>
                                     </div>
-                                    <span class="text-neutral-600 text-base font-medium">Rp 0</span>
-                                </div>
-                            @endif
+                                @endif --}}
+
 
                         </div>
                     </div>
                 </div>
             </div>
+        @endif
 
-            @endif
 
+        {{-- top customers --}}
+        <div class="md:col-span-12 lg:col-span-6 2xl:col-span-4">
+            <div class="card h-full border-0">
+                <div class="card-body">
+                    <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
+                        <h6 class="mb-2 font-bold text-lg">Top Customers</h6>
+                        <a href="{{ url('/member') }}"
+                            class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
+                            View All
+                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
+                        </a>
+                    </div>
 
-            {{-- top customers --}}
-            <div class="md:col-span-12 lg:col-span-6 2xl:col-span-4">
-                <div class="card h-full border-0">
-                    <div class="card-body">
-                        <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
-                            <h6 class="mb-2 font-bold text-lg">Top Customers</h6>
-                            <a href="{{ url('/member') }}"
-                                class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
-                                View All
-                                <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                            </a>
-                        </div>
-
-                        <div class="mt-8">
-                            @forelse($topCustomers as $customer)
-                                <div class="flex items-center justify-between gap-3 mb-8">
-                                    <div class="flex items-center gap-2">
-                                        <div
-                                            class="w-10 h-10 bg-primary-100 dark:bg-primary-600/25 rounded-lg shrink-0 flex items-center justify-center text-primary-600 dark:text-primary-400">
-                                            <span
-                                                class="text-lg font-medium">{{ strtoupper(substr($customer->name, 0, 1)) }}</span>
-                                        </div>
-                                        <div class="grow">
-                                            <h6 class="text-base mb-0 font-normal">{{ $customer->name }}</h6>
-                                            <span
-                                                class="text-sm text-secondary-light font-normal">{{ $customer->phone_number }}</span>
-                                        </div>
+                    <div class="mt-8">
+                        @forelse($topCustomers as $customer)
+                            <div class="flex items-center justify-between gap-3 mb-8">
+                                <div class="flex items-center gap-2">
+                                    <div
+                                        class="w-10 h-10 bg-primary-100 dark:bg-primary-600/25 rounded-lg shrink-0 flex items-center justify-center text-primary-600 dark:text-primary-400">
+                                        <span
+                                            class="text-lg font-medium">{{ strtoupper(substr($customer->name, 0, 1)) }}</span>
                                     </div>
-                                    <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders:
-                                        {{ $customer->order_count }}</span>
+                                    <div class="grow">
+                                        <h6 class="text-base mb-0 font-normal">{{ $customer->name }}</h6>
+                                        <span
+                                            class="text-sm text-secondary-light font-normal">{{ $customer->phone_number }}</span>
+                                    </div>
                                 </div>
-                            @empty
-                                <div class="flex items-center justify-center py-6 text-neutral-500">
-                                    No customer data available
-                                </div>
-                            @endforelse
-                        </div>
+                                <span class="text-neutral-600 dark:text-neutral-200 text-base font-medium">Orders:
+                                    {{ $customer->order_count }}</span>
+                            </div>
+                        @empty
+                            <div class="flex items-center justify-center py-6 text-neutral-500">
+                                No customer data available
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- top seelling product --}}
-            <div class="md:col-span-12 2xl:col-span-8">
-                <div class="card h-full border-0">
-                    <div class="card-body p-6">
-                        <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
-                            <h6 class="mb-2 font-bold text-lg">Top Selling Products</h6>
-                            <a href="{{ url('/product') }}"
-                                class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
-                                View All
-                                <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
-                            </a>
-                        </div>
-                        <div class="table-responsive scroll-sm">
-                            <table class="table bordered-table mb-0">
-                                <thead>
+        {{-- top seelling product --}}
+        <div class="md:col-span-12 2xl:col-span-8">
+            <div class="card h-full border-0">
+                <div class="card-body p-6">
+                    <div class="flex items-center flex-wrap gap-2 justify-between mb-5">
+                        <h6 class="mb-2 font-bold text-lg">Top Selling Products</h6>
+                        <a href="{{ url('/product') }}"
+                            class="text-primary-600 dark:text-primary-600 hover-text-primary flex items-center gap-1">
+                            View All
+                            <iconify-icon icon="solar:alt-arrow-right-linear" class="icon"></iconify-icon>
+                        </a>
+                    </div>
+                    <div class="table-responsive scroll-sm">
+                        <table class="table bordered-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Items</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Sold</th>
+                                    <th scope="col" class="text-center">Total Orders</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($topSellingProducts as $product)
                                     <tr>
-                                        <th scope="col">Items</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Discount</th>
-                                        <th scope="col">Sold</th>
-                                        <th scope="col" class="text-center">Total Orders</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($topSellingProducts as $product)
-                                        <tr>
-                                            <td>
-                                                <div class="flex items-center">
-                                                    @if ($product->image)
-                                                        <img src="{{ asset('storage/' . $product->image) }}"
-                                                            alt="{{ $product->name }}"
-                                                            class="w-10 h-10 object-cover shrink-0 me-3 rounded-lg">
-                                                    @else
-                                                        <div
-                                                            class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center shrink-0 me-3">
-                                                            <iconify-icon icon="mdi:cube-outline"
-                                                                class="text-gray-500 text-xl"></iconify-icon>
-                                                        </div>
-                                                    @endif
-                                                    <div class="grow">
-                                                        <h6 class="text-base mb-0 font-normal">{{ $product->name }}</h6>
-                                                        <span
-                                                            class="text-sm text-secondary-light font-normal">{{ $product->category_name ?? 'Uncategorized' }}</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>Rp {{ number_format($product->price, 0, '.', '.') }}</td>
-                                            <td>
-                                                @if ($product->is_discount)
-                                                    @if ($product->discount_type == 'percentage')
-                                                        {{ $product->discount }}%
-                                                    @else
-                                                        Rp {{ number_format($product->discount, 0, '.', '.') }}
-                                                    @endif
+                                        <td>
+                                            <div class="flex items-center">
+                                                @if ($product->image)
+                                                    <img src="{{ asset('storage/' . $product->image) }}"
+                                                        alt="{{ $product->name }}"
+                                                        class="w-10 h-10 object-cover shrink-0 me-3 rounded-lg">
                                                 @else
-                                                    N/A
+                                                    <div
+                                                        class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center shrink-0 me-3">
+                                                        <iconify-icon icon="mdi:cube-outline"
+                                                            class="text-gray-500 text-xl"></iconify-icon>
+                                                    </div>
                                                 @endif
-                                            </td>
-                                            <td>{{ $product->total_sold }}</td>
-                                            <td class="text-center">
-                                                <span
-                                                    class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-4 py-1.5 rounded-full font-medium text-sm">
-                                                    {{ $product->order_count }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center py-4 text-neutral-500">
-                                                No product sales data available
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
+                                                <div class="grow">
+                                                    <h6 class="text-base mb-0 font-normal">{{ $product->name }}</h6>
+                                                    <span
+                                                        class="text-sm text-secondary-light font-normal">{{ $product->category_name ?? 'Uncategorized' }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>Rp {{ number_format($product->price, 0, '.', '.') }}</td>
+                                        <td>
+                                            @if ($product->is_discount)
+                                                @if ($product->discount_type == 'percentage')
+                                                    {{ $product->discount }}%
+                                                @else
+                                                    Rp {{ number_format($product->discount, 0, '.', '.') }}
+                                                @endif
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
+                                        <td>{{ $product->total_sold }}</td>
+                                        <td class="text-center">
+                                            <span
+                                                class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 px-4 py-1.5 rounded-full font-medium text-sm">
+                                                {{ $product->order_count }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" style="text-align: center" class=" py-4 text-neutral-500 ">
+                                            No product sales data available
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 
     <script>

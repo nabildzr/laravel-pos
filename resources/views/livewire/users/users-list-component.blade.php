@@ -105,7 +105,7 @@
                                              <a href="{{ route('viewUserProfile', ['id' => $user->id]) }}"
                                                  class="bg-info-100 dark:bg-info-600/25 hover:bg-info-200 text-info-600 dark:text-info-400 font-medium w-10 h-10 flex justify-center items-center rounded-full">
                                                  <iconify-icon icon="majesticons:eye-line"
-                                                     class="icon text-xl"></iconify-icon>
+                                                    class="icon text-xl"></iconify-icon>
                                             @if (auth()->user()->role === 'super_admin')
                                                 <a href="{{ route('editUser', ['id' => $user->id]) }}"
                                                     class="bg-success-100 dark:bg-success-600/25 text-success-600 dark:text-success-400 bg-hover-success-200 font-medium w-10 h-10 flex justify-center items-center rounded-full">

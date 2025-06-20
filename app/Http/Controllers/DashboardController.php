@@ -60,6 +60,7 @@ class DashboardController extends Controller
         $totalCustomers = Member::count();
         $todaysOrders = Transaction::whereDate('created_at', now())->count();
         $todaysSales = Transaction::whereDate('created_at', now())->sum('total_amount');
+        $orders = Transaction::orderBy('created_at', 'desc')->take(5)->get();
 
         $recentOrders = Transaction::with(['user', 'member', 'transactionDetails.product'])
             ->orderBy('created_at', 'desc')
@@ -83,7 +84,8 @@ class DashboardController extends Controller
             'transactionsByPaymentMethod',
             'topCustomers',
             'topSellingProducts',
-            'revenueData'
+            'revenueData',
+            'orders'
         ));
     }
 
@@ -108,7 +110,7 @@ class DashboardController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-                if ($recentTransaction) {
+            if ($recentTransaction) {
                 $result[] = [
                     'payment_method' => $method,
                     'transaction_count' => $method->transaction_count,
@@ -140,7 +142,7 @@ class DashboardController extends Controller
         return $topCustomers;
     }
 
-   
+
     private function getTopSellingProducts()
     {
         $topProducts = DB::table('transaction_details')
