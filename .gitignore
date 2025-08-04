@@ -19,7 +19,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.nova
-/.vscode
+/.vscode 
 /.zed
 public/expenses_proof
 public/products
